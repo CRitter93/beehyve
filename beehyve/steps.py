@@ -2,6 +2,7 @@ from ast import literal_eval
 from behave import given, when, then, register_type
 from behave_pandas import dataframe_to_table, table_to_dataframe
 import importlib
+import inspect
 import pandas as pd
 import parse
 import re
@@ -54,6 +55,10 @@ def _get_var(context, name):
     return context.vars[name]
 
 
+def _has_var(context, name):
+    return "vars" in context and name in context.vars
+
+
 @given("the following table is loaded into dataframe {name:w}")
 def step_impl(context, name):
     _add_var(
@@ -68,56 +73,111 @@ def step_impl(context, val, name):
     _add_var(context, name, literal_eval(val))
 
 
-def _run_func(context, func, module, result_vars, args=None, kwargs=None):
-    if args is None:
-        args = ()
-    if kwargs is None:
-        kwargs = {}
+@given("the following variables are loaded")
+def step_impl(context):
+    table = context.table
 
+    if "var" not in table.headings and "val" not in table.headings:
+        raise ValueError("table has to contain a 'val' and 'var' column")
+
+    for row in table:
+        _add_var(context, row["var"], literal_eval(row["val"]))
+
+
+def _check_func_arguments(context, func):
+    """
+    Checks whether all required arguments of a function are available in the context's variables.
+
+    :return: None if the function cannot be called with the given variables,
+        names of available args, varargs, kwargs, and varkw - otherwise.
+    """
+    spec = inspect.getfullargspec(func)
+
+    args = spec.args
+    varargs = spec.varargs
+    kwargs = spec.kwonlyargs
+    varkw = spec.varkw
+
+    available_args = [arg for arg in args if _has_var(context, arg)]
+    available_varargs = varargs if varargs and _has_var(context, varargs) else None
+    available_kwargs = [kwarg for kwarg in kwargs if _has_var(context, kwarg)]
+    available_varkw = varkw if varkw and _has_var(context, varkw) else None
+
+    if spec.defaults and varargs is None:
+        required_args = args[: -len(spec.defaults)]
+    else:
+        required_args = args
+    has_required_args = all([arg in available_args for arg in required_args])
+    has_required_varargs = varargs is None or available_varargs == varargs
+
+    required_kwargs = [kwarg for kwarg in kwargs if kwarg not in spec.kwonlydefaults]
+    has_required_kwargs = all([kwarg in available_kwargs for kwarg in required_kwargs])
+    has_required_varkw = varkw is None or available_varkw == available_varkw
+
+    if (
+        has_required_args
+        and has_required_varargs
+        and has_required_kwargs
+        and has_required_varkw
+    ):
+        return available_args, available_varargs, available_kwargs, available_varkw
+
+    else:
+        error_msg = []
+        if not has_required_args:
+            error_msg.append(
+                f"required arguments are missing: {[arg for arg in required_args if arg not in available_args]}"
+            )
+        if not has_required_varargs:
+            error_msg.append(f"required varargs is missing: {varargs}")
+        if not has_required_kwargs:
+            error_msg.append(
+                f"required kwargs are missing: {[kwarg for kwarg in required_kwargs if kwarg not in available_kwargs]}"
+            )
+        if not has_required_varkw:
+            error_msg.append(f"required varkw is missing: {varkw}")
+
+        raise ValueError("\n".join(error_msg))
+
+
+def _run_func(context, func_name, module, result_vars):
     module = importlib.import_module(module)
-    f = getattr(module, func)
-    results = f(
-        *(_get_var(context, name) for name in args),
-        **{key: _get_var(context, name) for key, name in kwargs.items()},
-    )
+    func = getattr(module, func_name)
+
+    args, varargs, kwargs, varkw = _check_func_arguments(context, func)
+
+    args_vals = [_get_var(context, arg) for arg in args]
+    varargs_vals = _get_var(context, varargs) if varargs else None
+    kwargs_vals = {kwarg: _get_var(context, kwarg) for kwarg in kwargs}
+    varkw_vals = _get_var(context, varkw) if varkw else {}
+
+    if varargs:
+        results = func(*args_vals, *varargs_vals, **kwargs_vals, **varkw_vals)
+
+    else:
+        results = func(
+            **{arg: arg_val for arg, arg_val in zip(args, args_vals)},
+            **kwargs_vals,
+            **varkw_vals,
+        )
 
     if not isinstance(results, tuple):
         results = (results,)
 
-    assert len(results) == len(
-        result_vars
-    ), f"length mismatch of function returns ({len(results)}) and given variable names ({len(result_vars)})"
+    if len(results) != len(result_vars):
+        raise ValueError(
+            f"length mismatch of function returns ({len(results)}) and given variable names ({len(result_vars)})"
+        )
 
     for name, val in zip(result_vars, results):
         _add_var(context, name, val)
 
 
 @when(
-    "the function {func:w} of module {module:Module} is called with args={args:Tuple} and kwargs={kwargs:Dict} writing the results to {result_vars:Tuple}"
+    "the function {func_name:w} of module {module:Module} is called writing the results to {result_vars:Tuple}"
 )
-def step_impl(context, func, module, args, kwargs, result_vars):
-    _run_func(context, func, module, result_vars, args=args, kwargs=kwargs)
-
-
-@when(
-    "the function {func:w} of module {module:Module} is called with args={args:Tuple} writing the results to {result_vars:Tuple}"
-)
-def step_impl(context, func, module, args, result_vars):
-    _run_func(context, func, module, result_vars, args=args)
-
-
-@when(
-    "the function {func:w} of module {module:Module} is called with kwargs={kwargs:Dict} writing the results to {result_vars:Tuple}"
-)
-def step_impl(context, func, module, kwargs, result_vars):
-    _run_func(context, func, module, result_vars, kwargs=kwargs)
-
-
-@when(
-    "the function {func:w} of module {module:Module} is called writing the results to {result_vars:Tuple}"
-)
-def step_impl(context, func, module, result_vars):
-    _run_func(context, func, module, result_vars)
+def step_impl(context, func_name, module, result_vars):
+    _run_func(context, func_name, module, result_vars)
 
 
 @then("dataframe {name:w} is equal to")
