@@ -12,7 +12,7 @@ DESCRIPTION = (
 URL = ""
 EMAIL = "christian.ritter.93@gmail.com"
 AUTHOR = "Christian Ritter"
-REQUIRES_PYTHON = ">=3.9,<3.10"
+REQUIRES_PYTHON = ">=3.6"
 VERSION = None
 
 # What packages are required for this module to be executed?
@@ -51,7 +51,6 @@ setup(
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9",
     ],
     setup_requires=["wheel"],
 )
