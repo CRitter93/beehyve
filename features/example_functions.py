@@ -36,3 +36,7 @@ def concat_cols(df, sep="-", *, cols=None, new_col_name="concatenated_cols"):
 
 def join(a, b, *args, **kwargs):
     return "*".join([a, b, join_args(*args), join_kwargs(**kwargs)])
+
+
+def join_multi(a, b, *args, d=None, e=None, f=None):
+    return "*".join([a, b]), join_args(*args), join_kwargs(d=d, e=e, f=f)

@@ -8,15 +8,7 @@ Feature: Example Feature
             | 1     | 1.23    | text |
             | 5     | -4.5    | ABC  |
             | -3    | 6.78    | 123  |
-        Then the string representation of dataframe df1 is equal to
-            """
-            | int64 | int64 | float64 | object |
-            | index | val1  | val2    | val3   |
-            | 0     | 1     | 1.23    | text   |
-            | 1     | 5     | -4.5    | ABC    |
-            | 2     | -3    | 6.78    | 123    |
-            """
-        And dataframe df1 is equal to
+        Then dataframe df1 is equal to
             | int  | float | str  |
             | val1 | val2  | val3 |
             | 1    | 1.23  | text |

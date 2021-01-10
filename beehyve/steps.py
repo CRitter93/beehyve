@@ -10,22 +10,30 @@ import re
 DEFAULT_COLUMN_LEVEL = 1
 
 
-@parse.with_pattern(r"\((.+?, ?)+?.*?\)")
+@parse.with_pattern(r"\((\w+?, ?)+?\w*?\)")
 def _parse_tuple(string):
-    string = re.sub(r"(\w+)", r'"\1"', string)
+    string = re.sub(r"(\w+)", r'"\1"', string) # add quotes
     t = literal_eval(string)
     if not isinstance(t, tuple):
         raise ValueError(f"the given value {string} cannot be interpreted as tuple")
     return t
 
 
-@parse.with_pattern(r"\{(.+?: .+?, ?)*?(.+?: .+?)?\}")
+@parse.with_pattern(r"\{(\w+?: \w+?, ?)*?(\w+?: \w+?)?\}")
 def _parse_dict(string):
-    string = re.sub(r"(\w+)", r'"\1"', string)
+    string = re.sub(r"(\w+)", r'"\1"', string) # add quotes
     d = literal_eval(string)
     if not isinstance(d, dict):
         raise ValueError(f"the given value {string} cannot be interpreted as dict")
     return d
+
+
+@parse.with_pattern(r"(\((\w+?, ?)+?\w*?\)|\w*?)")
+def _parse_func_result(string):
+    if re.match(r"^\w*?$", string):
+        return (string, )
+    else:
+        return _parse_tuple(string)
 
 
 @parse.with_pattern(r".+?(\..+?)+?")
@@ -35,6 +43,7 @@ def _parse_module(string):
 
 register_type(Tuple=_parse_tuple)
 register_type(Dict=_parse_dict)
+register_type(Result=_parse_func_result)
 register_type(Module=_parse_module)
 
 
@@ -164,17 +173,19 @@ def _run_func(context, func_name, module, result_vars):
     if not isinstance(results, tuple):
         results = (results,)
 
-    if len(results) != len(result_vars):
+    if len(results) == len(result_vars):
+        for name, val in zip(result_vars, results):
+            _add_var(context, name, val)
+    elif len(result_vars) == 1:
+        _add_var(context, result_vars[0], results)
+    else:
         raise ValueError(
             f"length mismatch of function returns ({len(results)}) and given variable names ({len(result_vars)})"
         )
 
-    for name, val in zip(result_vars, results):
-        _add_var(context, name, val)
-
 
 @when(
-    "the function {func_name:w} of module {module:Module} is called writing the results to {result_vars:Tuple}"
+    "the function {func_name:w} of module {module:Module} is called writing the results to {result_vars:Result}"
 )
 def step_impl(context, func_name, module, result_vars):
     _run_func(context, func_name, module, result_vars)
