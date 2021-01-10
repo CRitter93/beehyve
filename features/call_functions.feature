@@ -3,7 +3,7 @@ Feature: Call functions using BeeHyve
     Scenario: Call function without arguments
         When the function create_new_df of module beehyve.example_functions is called writing the results to (df,)
         Then dataframe df is equal to
-            | int   | int    | int   |
+            | int64 | int64  | int64 |
             | col_a | col_b  | col_c |
             | 0     | 0      | 0     |
             | 0     | 0      | 0     |
@@ -41,7 +41,7 @@ Feature: Call functions using BeeHyve
             | fill_val | 42  |
         When the function create_new_df of module beehyve.example_functions is called writing the results to (df,)
         Then dataframe df is equal to
-            | int   | int    | int   |
+            | int64 | int64  | int64 |
             | col_a | col_b  | col_c |
             | 42    | 42     | 42    |
             | 42    | 42     | 42    |

@@ -3,11 +3,11 @@ Feature: Example Feature
     Scenario: Load table into pandas Dataframe
 
         Given the following table is loaded into dataframe df1
-            | int  | float | str  |
-            | val1 | val2  | val3 |
-            | 1    | 1.23  | text |
-            | 5    | -4.5  | ABC  |
-            | -3   | 6.78  | 123  |
+            | int64 | float64 | str  |
+            | val1  | val2    | val3 |
+            | 1     | 1.23    | text |
+            | 5     | -4.5    | ABC  |
+            | -3    | 6.78    | 123  |
         Then the string representation of dataframe df1 is equal to
             """
             | int64 | int64 | float64 | object |
