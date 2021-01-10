@@ -1,6 +1,6 @@
 import os
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 # Package metadata
 # ----------------
@@ -17,9 +17,10 @@ VERSION = None
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    "behave>=1.2,<1.3",
-    "pandas>=1.2,<1.3",
-    "behave-pandas>=0.4,<0.5",
+    "behave>=1.2",
+    "pandas>=1",
+    "behave-pandas>=0.4",
+    "parse>=1",
 ]
 
 # Package setup

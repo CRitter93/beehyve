@@ -1,0 +1,4 @@
+behave>=1.2,<1.3,
+pandas>=1.2,<1.3,
+behave-pandas>=0.4,<0.5
+parse>=1.18,<1.19
