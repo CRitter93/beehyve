@@ -1,6 +1,6 @@
 # BeeHyve
 
-<p align="center">
-<a href="https://github.com/CRitter93/beehyve/actions"><img alt="Actions Status" src="https://github.com/CRitter93/beehyve/workflows/Tests/badge.svg"></a>
-<a href="https://github.com/CRitter93/beehyve/actions"><img alt="Actions Status" src="https://github.com/CRitter93/beehyve/workflows/Lint/badge.svg"></a>
-</p>
+[![Test Status](https://github.com/CRitter93/beehyve/workflows/Lint/badge.svg)](https://github.com/CRitter93/beehyve/actions?query=workflow%3ATests)
+[![Lint Status](https://github.com/CRitter93/beehyve/workflows/Lint/badge.svg)](https://github.com/CRitter93/beehyve/actions?query=workflow%3ALint)
+[![isort Status](https://github.com/CRitter93/beehyve/workflows/Lint/badge.svg)](https://github.com/CRitter93/beehyve/actions?query=workflow%3Aisort)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
