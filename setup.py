@@ -18,6 +18,7 @@ VERSION = None
 # What packages are required for this module to be executed?
 REQUIRED = [
     "behave>=1.2",
+    "numpy>=1.19",
     "pandas>=1",
     "behave-pandas>=0.4",
     "parse>=1",
