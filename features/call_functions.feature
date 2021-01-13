@@ -3,11 +3,11 @@ Feature: Call functions using BeeHyve
     Scenario: Call function without arguments
         When the function create_new_df of module features.example_functions is called writing the results to df
         Then dataframe df is equal to
-            | int64 | int64  | int64 |
-            | col_a | col_b  | col_c |
-            | 0     | 0      | 0     |
-            | 0     | 0      | 0     |
-            | 0     | 0      | 0     |
+            | int64 | int64 | int64 |
+            | col_a | col_b | col_c |
+            | 0     | 0     | 0     |
+            | 0     | 0     | 0     |
+            | 0     | 0     | 0     |
 
     Scenario: Call function with args
         Given the following table is loaded into dataframe df
@@ -41,11 +41,11 @@ Feature: Call functions using BeeHyve
             | fill_val | 42  |
         When the function create_new_df of module features.example_functions is called writing the results to df
         Then dataframe df is equal to
-            | int64 | int64  | int64 |
-            | col_a | col_b  | col_c |
-            | 42    | 42     | 42    |
-            | 42    | 42     | 42    |
-            | 42    | 42     | 42    |
+            | int64 | int64 | int64 |
+            | col_a | col_b | col_c |
+            | 42    | 42    | 42    |
+            | 42    | 42    | 42    |
+            | 42    | 42    | 42    |
 
     Scenario: Call function with varkw
         Given the following variables are loaded
@@ -63,8 +63,8 @@ Feature: Call functions using BeeHyve
             | 5    | -4.5  | ABC  |
             | -3   | 6.78  | 123  |
         And the following variables are loaded
-            | var      | val              |
-            | cols     | ["val1", "val3"] |
+            | var  | val              |
+            | cols | ["val1", "val3"] |
         When the function concat_cols of module features.example_functions is called writing the results to df2
         Then dataframe df2 is equal to
             | str  | float | str  | str               |
@@ -113,3 +113,6 @@ Feature: Call functions using BeeHyve
         And the type of variable varargs_out is str
         And the value of variable kwargs_out is "d:1-e:2-f:3"
         And the type of variable kwargs_out is str
+
+    Scenario: Call function without output
+        When the function do_nothing of module features.example_functions is called

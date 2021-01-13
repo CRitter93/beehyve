@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>beehyve.steps &#8212; beehyve 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for beehyve.steps</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ast</span> <span class="kn">import</span> <span class="n">literal_eval</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">behave</span> <span class="kn">import</span> <span class="n">given</span><span class="p">,</span> <span class="n">register_type</span><span class="p">,</span> <span class="n">then</span><span class="p">,</span> <span class="n">when</span>
+<span class="kn">from</span> <span class="nn">behave.runner</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">behave_pandas</span> <span class="kn">import</span> <span class="n">table_to_dataframe</span>
+
+<span class="kn">from</span> <span class="nn">beehyve</span> <span class="kn">import</span> <span class="n">types</span>
+<span class="kn">from</span> <span class="nn">beehyve.functions</span> <span class="kn">import</span> <span class="n">add_var</span><span class="p">,</span> <span class="n">get_var</span><span class="p">,</span> <span class="n">run_func</span>
+
+<span class="n">DEFAULT_COLUMN_LEVEL</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">register_type</span><span class="p">(</span><span class="n">Tuple</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">parse_tuple</span><span class="p">)</span>
+<span class="n">register_type</span><span class="p">(</span><span class="n">Dict</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">parse_dict</span><span class="p">)</span>
+<span class="n">register_type</span><span class="p">(</span><span class="n">Result</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">parse_func_result</span><span class="p">)</span>
+<span class="n">register_type</span><span class="p">(</span><span class="n">Module</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">parse_module</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="step_load_table_into_df"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_load_table_into_df">[docs]</a><span class="nd">@given</span><span class="p">(</span><span class="s2">&quot;the following table is loaded into dataframe {name:w}&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_load_table_into_df</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Loads and parses a behave table into a :class:`pandas.DataFrame`</span>
+<span class="sd">    using `behave_pandas &lt;https://pypi.org/project/behave-pandas/&gt;`_.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param name: the name of the variable to which the dataframe should be assigned</span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">add_var</span><span class="p">(</span>
+        <span class="n">context</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">table_to_dataframe</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="n">column_levels</span><span class="o">=</span><span class="n">DEFAULT_COLUMN_LEVEL</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="step_load_csv_into_df_with_kwargs"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_load_csv_into_df_with_kwargs">[docs]</a><span class="nd">@given</span><span class="p">(</span>
+    <span class="s2">&quot;the CSV file </span><span class="si">{file_name}</span><span class="s2"> is loaded into dataframe {name:w} (read_csv kwargs: {kwargs:Dict})&quot;</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_load_csv_into_df_with_kwargs</span><span class="p">(</span>
+    <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Loads a CSV into a :class:`pandas.DataFrame` with additional kwargs.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param file_name: the name of the CSV file to load</span>
+<span class="sd">    :type file_name: str</span>
+<span class="sd">    :param name: the name of the variable to which the dataframe should be assigned</span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    :param kwargs: a dict containing kwargs to be passed to :func:`pandas.read_csv`</span>
+<span class="sd">    :type kwargs: Dict[str, str]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">add_var</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="step_load_csv_into_df"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_load_csv_into_df">[docs]</a><span class="nd">@given</span><span class="p">(</span><span class="s2">&quot;the CSV file </span><span class="si">{file_name}</span><span class="s2"> is loaded into dataframe {name:w}&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_load_csv_into_df</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Loads a CSV into a :class:`pandas.DataFrame`.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param file_name: the name of the CSV file to load</span>
+<span class="sd">    :type file_name: str</span>
+<span class="sd">    :param name: the name of the variable to which the dataframe should be assigned</span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">add_var</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="step_load_value_into_variable"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_load_value_into_variable">[docs]</a><span class="nd">@given</span><span class="p">(</span><span class="s2">&quot;the value </span><span class="si">{val}</span><span class="s2"> is loaded into variable {name:w}&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_load_value_into_variable</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Loads a value into a variable.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param val: a value to be loaded</span>
+<span class="sd">    :type val: Any</span>
+<span class="sd">    :param name: the name of the variable to which the value should be assigned</span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">add_var</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">literal_eval</span><span class="p">(</span><span class="n">val</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="step_load_table_into_variables"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_load_table_into_variables">[docs]</a><span class="nd">@given</span><span class="p">(</span><span class="s2">&quot;the following variables are loaded&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_load_table_into_variables</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Loads a table of values into variables.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :raises ValueError: if the given table does not contain the necessary columns &#39;val&#39; and &#39;var&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">table</span>
+
+    <span class="k">if</span> <span class="s2">&quot;var&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">headings</span> <span class="ow">and</span> <span class="s2">&quot;val&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">headings</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;table has to contain a &#39;val&#39; and &#39;var&#39; column&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+        <span class="n">add_var</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;var&quot;</span><span class="p">],</span> <span class="n">literal_eval</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="step_run_function"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_run_function">[docs]</a><span class="nd">@when</span><span class="p">(</span>
+    <span class="s2">&quot;the function {func_name:w} of module {module:Module} is called writing the results to {result_vars:Result}&quot;</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_run_function</span><span class="p">(</span>
+    <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">func_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">result_vars</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Executes an arbitrary python function using the variables in the context.</span>
+<span class="sd">    For more details see :func:`run_func`.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param func_name: the name of the function to execute</span>
+<span class="sd">    :type func_name: str</span>
+<span class="sd">    :param module: the module where the function can be found,</span>
+<span class="sd">        i.e., you should be able to import &lt;func_name&gt; from &lt;module&gt;</span>
+<span class="sd">    :type module: str</span>
+<span class="sd">    :param result_vars: a tuple of variable names</span>
+<span class="sd">        to which the result(s) of the function should be assigned</span>
+<span class="sd">    :type result_vars: Tuple[str]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">run_func</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">result_vars</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="step_run_function_wo_return"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_run_function_wo_return">[docs]</a><span class="nd">@when</span><span class="p">(</span><span class="s2">&quot;the function {func_name:w} of module {module:Module} is called&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_run_function_wo_return</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">func_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Executes an arbitrary python function using the variables in the context.</span>
+<span class="sd">    For more details see :func:`run_func`.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param func_name: the name of the function to execute</span>
+<span class="sd">    :type func_name: str</span>
+<span class="sd">    :param module: the module where the function can be found,</span>
+<span class="sd">        i.e., you should be able to import &lt;func_name&gt; from &lt;module&gt;</span>
+<span class="sd">    :type module: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">run_func</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="step_df_equal_to_table"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_df_equal_to_table">[docs]</a><span class="nd">@then</span><span class="p">(</span><span class="s2">&quot;dataframe {name:w} is equal to&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_df_equal_to_table</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Checks whether a dataframe is equal to the given table</span>
+<span class="sd">    using :func:`pandas.testing.assert_frame_equal`.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param name: the name of the variable in which the dataframe is stored</span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span>
+        <span class="n">get_var</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span>
+        <span class="n">table_to_dataframe</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="n">column_levels</span><span class="o">=</span><span class="n">DEFAULT_COLUMN_LEVEL</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="step_df_equal_to_df"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_df_equal_to_df">[docs]</a><span class="nd">@then</span><span class="p">(</span><span class="s2">&quot;dataframe {name1:w} is equal to dataframe {name2:w}&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_df_equal_to_df</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">name1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name2</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Checks whether two dataframes are equal</span>
+<span class="sd">    using :func:`pandas.testing.assert_frame_equal`.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param name1: the name of the variable in which the first dataframe is stored</span>
+<span class="sd">    :type name1: str</span>
+<span class="sd">    :param name2: the name of the variable in which the second dataframe is stored</span>
+<span class="sd">    :type name2: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">get_var</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">name1</span><span class="p">),</span> <span class="n">get_var</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">name2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="step_variable_equal_to_value"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_variable_equal_to_value">[docs]</a><span class="nd">@then</span><span class="p">(</span><span class="s2">&quot;the value of variable {name:w} is </span><span class="si">{true_val}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_variable_equal_to_value</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">true_val</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Checks whether a variable is equal to a value.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param name: the name of the variable to check</span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    :param true_val: the expected value</span>
+<span class="sd">    :type true_val: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">actual_val</span> <span class="o">=</span> <span class="n">get_var</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">actual_val</span> <span class="o">==</span> <span class="n">literal_eval</span><span class="p">(</span><span class="n">true_val</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;actual value is </span><span class="si">{</span><span class="n">actual_val</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="step_variable_type_equal_to"><a class="viewcode-back" href="../../beehyve.html#beehyve.steps.step_variable_type_equal_to">[docs]</a><span class="nd">@then</span><span class="p">(</span><span class="s2">&quot;the type of variable {name:w} is {true_type:w}&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_variable_type_equal_to</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">true_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Checks whether the type of a variable matches a given type.</span>
+
+<span class="sd">    :param context: the current context</span>
+<span class="sd">    :type context: :class:`behave.runner.Context`</span>
+<span class="sd">    :param name: the name of the variable to check</span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    :param true_type: the expected type</span>
+<span class="sd">    :type true_type: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">actual_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">get_var</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">assert</span> <span class="n">actual_type</span> <span class="o">==</span> <span class="n">true_type</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;actual type is </span><span class="si">{</span><span class="n">actual_type</span><span class="si">}</span><span class="s2">&quot;</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">beehyve</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../beehyve.html">beehyve package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Christian Ritter.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

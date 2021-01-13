@@ -26,6 +26,7 @@ def concat_cols(df, sep="-", *, cols=None, new_col_name="concatenated_cols"):
         raise ValueError
 
     df = df.copy()
+
     df[new_col_name] = df[cols[0]]
 
     for col in cols[1:]:
@@ -40,3 +41,7 @@ def join(a, b, *args, **kwargs):
 
 def join_multi(a, b, *args, d=None, e=None, f=None):
     return "*".join([a, b]), join_args(*args), join_kwargs(d=d, e=e, f=f)
+
+
+def do_nothing():
+    return
