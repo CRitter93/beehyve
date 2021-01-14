@@ -12,6 +12,10 @@ Hijacking [behave](https://behave.readthedocs.io/en/stable/) to test data pipeli
 
 ---
 
+## Documentation
+
+See documentation at [readthedocs](https://beehyve.readthedocs.io/en/latest/).
+
 ## Installation
 
 ### Install using PyPI
