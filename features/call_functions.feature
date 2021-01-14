@@ -30,9 +30,25 @@ Feature: Call functions using BeeHyve
     Scenario: Call function with varargs
         Given the following variables are loaded
             | var  | val             |
+            | args | ("a", "b", "c") |
+        When the function join_args of module features.example_functions is called writing the results to joined_args
+        Then the value of variable joined_args is "a.b.c"
+        And the type of variable joined_args is str
+
+    Scenario: Call function with varargs of type list
+        Given the following variables are loaded
+            | var  | val             |
             | args | ["a", "b", "c"] |
         When the function join_args of module features.example_functions is called writing the results to joined_args
         Then the value of variable joined_args is "a.b.c"
+        And the type of variable joined_args is str
+
+    Scenario: Call function with varargs being a single value
+        Given the following variables are loaded
+            | var  | val |
+            | args | "a" |
+        When the function join_args of module features.example_functions is called writing the results to joined_args
+        Then the value of variable joined_args is "a"
         And the type of variable joined_args is str
 
     Scenario: Call function with kwargs

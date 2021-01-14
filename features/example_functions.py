@@ -45,3 +45,7 @@ def join_multi(a, b, *args, d=None, e=None, f=None):
 
 def do_nothing():
     return
+
+
+def join_wo_defaults(*args, d, e, **kwargs):
+    return join(*args, d=d, e=e, **kwargs)

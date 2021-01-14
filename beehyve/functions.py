@@ -94,9 +94,9 @@ def _check_func_arguments(
             kwarg for kwarg in kwargs if kwarg not in spec.kwonlydefaults
         ]
     else:
-        required_kwargs = []
+        required_kwargs = kwargs
     has_required_kwargs = all([kwarg in available_kwargs for kwarg in required_kwargs])
-    has_required_varkw = varkw is None or available_varkw == available_varkw
+    has_required_varkw = varkw is None or available_varkw == varkw
 
     if (
         has_required_args
@@ -154,7 +154,7 @@ def _get_argument_values(
     varkw_vals = get_var(context, varkw) if varkw else {}
 
     if not isinstance(varargs_vals, tuple):
-        if isinstance(varargs_vals, Iterable):
+        if isinstance(varargs_vals, Iterable) and not isinstance(varargs_vals, str):
             varargs_vals = tuple(varargs_vals)
         else:
             varargs_vals = (varargs_vals,)
@@ -244,3 +244,27 @@ def run_func(
         )
 
     _assign_results(context, results, result_vars)
+
+
+def raises_error(func: Callable) -> Callable:
+    """A decorator that allows to define steps that may expect errors
+    when context.error_expected is set to True.
+
+    :param func: a step implementation
+    :type func: Callable
+    :return: a wapper of the step implementation that catches an error
+        and stores its type in context.exception_type
+    :rtype: Callable
+    """
+
+    def new_func(context: Context, *args, **kwargs):
+
+        if "error_expected" in context and context.error_expected:
+            try:
+                return func(context, *args, **kwargs)
+            except Exception as exc:
+                context.exception_type = type(exc).__name__
+        else:
+            return func(context, *args, **kwargs)
+
+    return new_func
