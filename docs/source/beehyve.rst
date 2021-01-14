@@ -1,8 +1,9 @@
-beehyve package
-===============
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
 
 Submodules
-----------
+##################
 
 beehyve.functions module
 ------------------------
@@ -24,14 +25,6 @@ beehyve.types module
 --------------------
 
 .. automodule:: beehyve.types
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: beehyve
    :members:
    :undoc-members:
    :show-inheritance:

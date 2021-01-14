@@ -32,6 +32,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.todo",
     "sphinx.ext.intersphinx",
+    "m2r2",
 ]
 
 
@@ -61,3 +62,5 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "behave": ("https://behave.readthedocs.io/en/stable/", None),
 }
+
+html_theme = "sphinx_rtd_theme"

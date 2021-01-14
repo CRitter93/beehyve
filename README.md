@@ -8,7 +8,7 @@
 
 ---
 
-__Hijacking [behave](https://behave.readthedocs.io/en/stable/) to test data pipelines.__
+Hijacking [behave](https://behave.readthedocs.io/en/stable/) to test data pipelines.
 
 ---
 

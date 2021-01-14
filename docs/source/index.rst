@@ -6,6 +6,8 @@
 Welcome to beehyve's documentation!
 ===================================
 
+Hijacking `behave <https://behave.readthedocs.io/en/stable/>`_ to test data pipelines.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
@@ -18,5 +20,5 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+
+.. mdinclude:: ../../README.md
