@@ -4,7 +4,7 @@
 [![Lint Status](https://github.com/CRitter93/beehyve/workflows/Lint/badge.svg)](https://github.com/CRitter93/beehyve/actions?query=workflow%3ALint)
 [![isort Status](https://github.com/CRitter93/beehyve/workflows/isort/badge.svg)](https://github.com/CRitter93/beehyve/actions?query=workflow%3Aisort)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![codecov](https://codecov.io/gh/CRitter93/beehyve/branch/master/graph/badge.svg)](https://codecov.io/gh/CRitter93/beehyve)
+[![codecov](https://codecov.io/gh/CRitter93/beehyve/branch/main/graph/badge.svg?token=5QBV9RI4J6)](https://codecov.io/gh/CRitter93/beehyve)
 
 ---
 
