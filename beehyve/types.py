@@ -17,7 +17,9 @@ def parse_tuple(string: str) -> Tuple[Any, ...]:
     """
     tup = literal_eval(string)
     if not isinstance(tup, tuple):
-        raise ValueError(f"the given value {string} cannot be interpreted as tuple")
+        raise ValueError(
+            f"the given value {string} cannot be interpreted as tuple"
+        )  # pragma: no cover
     return tup
 
 
@@ -35,7 +37,9 @@ def parse_dict(string: str) -> Dict[str, Any]:
     """
     dic = literal_eval(string)
     if not isinstance(dic, dict):
-        raise ValueError(f"the given value {string} cannot be interpreted as dict")
+        raise ValueError(
+            f"the given value {string} cannot be interpreted as dict"
+        )  # pragma: no cover
     return dic
 
 
