@@ -17,11 +17,18 @@ VERSION = None
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    "behave>=1.2",
-    "pandas>=1",
-    "behave-pandas>=0.4",
-    "parse>=1",
+    "behave>=1.2,<1.3",
+    "pandas>=1.3,<1.4",
+    "behave-pandas>=0.4,<0.5",
+    "parse>=1.19,<1.20",
 ]
+EXTRAS = {
+    "dev": [
+        "black>=20.8b0,<21",
+        "coverage>=5.5,<6",
+        "isort>=5.9.3,<6",
+    ]
+}
 
 # Package setup
 # -------------
@@ -47,6 +54,7 @@ setup(
     url=URL,
     packages=find_packages(exclude=("tests", "docs")),
     install_requires=REQUIRED,
+    extras_require=EXTRAS,
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python",

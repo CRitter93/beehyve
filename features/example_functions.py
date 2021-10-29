@@ -49,3 +49,7 @@ def do_nothing():
 
 def join_wo_defaults(*args, d, e, **kwargs):
     return join(*args, d=d, e=e, **kwargs)
+
+
+def do_nothing_w_input(*args, **kwargs):
+    return
