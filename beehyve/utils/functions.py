@@ -19,7 +19,9 @@ def execute_function(
     kwargs: Mapping[str, str],
     result_names: Tuple[str, ...] = (),
 ):
-    """Import and run a function from a given module using the given args and kwargs the context as arguments.
+    """Import and run a function from a given module.
+
+    Uses the given args and kwargs from the context as arguments.
 
     :param context: the current context
     :param func_name: the name of the function to execute
@@ -70,7 +72,7 @@ def execute_function_from_context(
     module: str,
     result_names: Tuple[str, ...] = (),
 ):
-    """Import and run a function from a given module using the variables of the context as arguments.
+    """Import and run a function from a given module.
 
     It expects the variables in the context to have the exact same names
     as the arguments of the function signature.
@@ -113,7 +115,7 @@ def _check_func_signature(context: Context, signature: "SignatureHandler"):
         and has_required_kwargs
         and has_required_varkw
     ):
-        return ValueError("Not all required arguments are in the context.")
+        raise ValueError("Not all required arguments are in the context.")
 
 
 def _assign_results(

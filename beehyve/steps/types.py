@@ -1,6 +1,6 @@
 import re
 from ast import literal_eval
-from typing import Any, Dict, Mapping, Sequence, Tuple
+from typing import Any, Callable, Dict, Mapping, Sequence, Tuple
 
 import parse
 
@@ -94,3 +94,20 @@ def parse_kwargs(string: str) -> Mapping[str, str]:
 def parse_csv_file_path(string: str) -> str:
     """Parse a file path of a csv file."""
     return string
+
+
+def create_limited_kwarg_parser(
+    allowed_kwargs: Sequence[str],
+) -> Callable[[str], Mapping[str, Any]]:
+    kwarg_names_regex = "|".join(allowed_kwargs)
+    pattern = fr"(({kwarg_names_regex}) ?= ?.+?, ?)*?(({kwarg_names_regex}) ?= ?.+?)?"
+
+    @parse.with_pattern(pattern)
+    def _parse_limited_kwargs(string: str) -> Mapping[str, Any]:
+        mapping = parse_kwargs(string)
+
+        mapping = {key: literal_eval(val) for key, val in mapping.items()}
+
+        return mapping
+
+    return _parse_limited_kwargs

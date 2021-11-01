@@ -4,7 +4,7 @@ from behave import register_type, when
 from behave.runner import Context
 
 from beehyve.steps import types
-from beehyve.utils.function_calls import execute_function, execute_function_from_context
+from beehyve.utils.functions import execute_function, execute_function_from_context
 
 register_type(Result=types.parse_func_result)
 register_type(Module=types.parse_module)
