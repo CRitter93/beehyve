@@ -9,8 +9,7 @@ import parse
 def parse_tuple(string: str) -> Tuple[Any, ...]:
     """Parse a tuple from a given string.
 
-    :param string: the string representation of a tuple
-    :return: a tuple parsed from the given string
+    Uses :py:func:`literal_eval` to parse the values.
     """
     tup = literal_eval(string)
     if not isinstance(tup, tuple):
@@ -24,8 +23,7 @@ def parse_tuple(string: str) -> Tuple[Any, ...]:
 def parse_dict(string: str) -> Dict[str, Any]:
     """Parse a dict from a given string.
 
-    :param string: the string representation of the dict
-    :return: a dict parsed from the given string
+    Uses :py:func:`literal_eval` to parse the values.
     """
     dic = literal_eval(string)
     if not isinstance(dic, dict):
@@ -40,9 +38,6 @@ def parse_func_result(string: str) -> Tuple[str, ...]:
     """Parse a tuple of strings from a given string.
     If only a single string is passed it is added to a tuple.
     Uses :func:`parse_tuple` to do the actual parsing.
-
-    :param string: the string representation of the tuple or a single name
-    :return: a tuple containing result names (strings)
     """
     if re.match(r"^\w*?$", string):
         return (string,)
@@ -55,16 +50,13 @@ def parse_func_result(string: str) -> Tuple[str, ...]:
 
 @parse.with_pattern(r".+?(\..+?)+?")
 def parse_module(string: str) -> str:
-    """Used to type a module name (i.e., dot-separated module path) in behave.
-
-    :param string: a string representing a module to be imported
-    :return: the input string
-    """
+    """Used to type a module name (i.e., dot-separated module path) in behave."""
     return string
 
 
 @parse.with_pattern(r"(\w+?, ?)*?(\w+?)?")
 def parse_args(string: str) -> Sequence[str]:
+    """Parse arguments given as comma separated list."""
     if string == "":
         return list()
 
@@ -78,6 +70,9 @@ def parse_args(string: str) -> Sequence[str]:
 
 @parse.with_pattern(r"(\w+? ?= ?\w+?, ?)*?(\w+? ?= ?\w+?)?")
 def parse_kwargs(string: str) -> Mapping[str, str]:
+    """Parse keyword arguments given as comma separated list of assignments,
+    e.g., :code:`a=var_1, b=var_2, d=var_3`
+    """
     if string == "":
         return dict
 
@@ -93,3 +88,9 @@ def parse_kwargs(string: str) -> Mapping[str, str]:
     }
 
     return kwargs
+
+
+@parse.with_pattern(r"(/?\w+?/)*\w+?\.(csv|CSV)")
+def parse_csv_file_path(string: str) -> str:
+    """Parse a file path of a csv file."""
+    return string

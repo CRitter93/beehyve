@@ -10,13 +10,12 @@ from beehyve.utils.variables import add_var, get_var
 
 DEFAULT_COLUMN_LEVEL = 1
 
-register_type(Tuple=types.parse_tuple)
 register_type(Dict=types.parse_dict)
-register_type(Result=types.parse_func_result)
-register_type(Module=types.parse_module)
+register_type(CSVFile=types.parse_csv_file_path)
 
 
 @given("the following table is loaded into dataframe {name:w}")
+@given("dataframe {name:w} <-")
 def step_load_table_into_df(context: Context, name: str):
     """Loads and parses a behave table into a :class:`pandas.DataFrame`
     using `behave_pandas <https://pypi.org/project/behave-pandas/>`_.
@@ -32,8 +31,9 @@ def step_load_table_into_df(context: Context, name: str):
 
 
 @given(
-    "the CSV file {file_name} is loaded into dataframe {name:w} (read_csv kwargs: {kwargs:Dict})"
+    "the CSV file {file_name:CSVFile} is loaded into dataframe {name:w} (read_csv kwargs: {kwargs:Dict})"
 )
+@given("dataframe {name:w} <- read({file_name:CSVFile}, kwargs={kwargs:Dict})")
 def step_load_csv_into_df_with_kwargs(
     context: Context, file_name: str, name: str, kwargs: Dict[str, str]
 ):
@@ -47,7 +47,8 @@ def step_load_csv_into_df_with_kwargs(
     add_var(context, name, pd.read_csv(file_name, **kwargs))
 
 
-@given("the CSV file {file_name} is loaded into dataframe {name:w}")
+@given("the CSV file {file_name:CSVFile} is loaded into dataframe {name:w}")
+@given("dataframe {name:w} <- read({file_name:CSVFile})")
 def step_load_csv_into_df(context: Context, file_name: str, name: str):
     """Loads a CSV into a :class:`pandas.DataFrame`.
 
@@ -59,6 +60,7 @@ def step_load_csv_into_df(context: Context, file_name: str, name: str):
 
 
 @then("dataframe {name:w} is equal to")
+@then("dataframe {name:w} equals")
 def step_df_equal_to_table(context: Context, name: str):
     """Checks whether a dataframe is equal to the given table
     using :func:`pandas.testing.assert_frame_equal`.
@@ -73,6 +75,7 @@ def step_df_equal_to_table(context: Context, name: str):
 
 
 @then("dataframe {name1:w} is equal to dataframe {name2:w}")
+@then("dataframe {name1:w} equals {name2:w}")
 def step_df_equal_to_df(context: Context, name1: str, name2: str):
     """Checks whether two dataframes are equal
     using :func:`pandas.testing.assert_frame_equal`.

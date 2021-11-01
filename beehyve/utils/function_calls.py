@@ -1,3 +1,5 @@
+"""Collection of functions used to call arbitrary functions in step definitions."""
+
 import importlib
 import inspect
 from collections.abc import Iterable
@@ -17,8 +19,7 @@ def execute_function(
     kwargs: Mapping[str, str],
     result_names: Tuple[str, ...] = (),
 ):
-    """Imports and runs a function from a given module
-    using the given args and kwargs the context as arguments.
+    """Import and run a function from a given module using the given args and kwargs the context as arguments.
 
     :param context: the current context
     :param func_name: the name of the function to execute
@@ -69,8 +70,7 @@ def execute_function_from_context(
     module: str,
     result_names: Tuple[str, ...] = (),
 ):
-    """Imports and runs a function from a given module
-    using the variables of the context as arguments.
+    """Import and run a function from a given module using the variables of the context as arguments.
 
     It expects the variables in the context to have the exact same names
     as the arguments of the function signature.
