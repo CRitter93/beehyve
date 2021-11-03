@@ -73,13 +73,9 @@ def step_load_table_into_series(context: Context, name: str):
     )
 
 
-@given(
-    "the CSV file {file_name:CSVFile} is loaded into dataframe {name:w} (read_csv kwargs: {kwargs:Dict})"
-)
+@given("the CSV file {file_name:CSVFile} is loaded into dataframe {name:w} (read_csv kwargs: {kwargs:Dict})")
 @given("dataframe {name:w} <- read({file_name:CSVFile}, kwargs={kwargs:Dict})")
-def step_load_csv_into_df_with_kwargs(
-    context: Context, file_name: str, name: str, kwargs: Dict[str, str]
-):
+def step_load_csv_into_df_with_kwargs(context: Context, file_name: str, name: str, kwargs: Dict[str, str]):
     """Loads a CSV into a :class:`pandas.DataFrame` with additional kwargs.
 
     :param context: the current context
@@ -135,9 +131,7 @@ def step_df_equal_to_df(context: Context, name1: str, name2: str):
 
 @then("dataframe {name:w} is equal to (kwargs: {kwargs:FrameEqualsKWArgs})")
 @then("dataframe {name:w} equals ({kwargs:FrameEqualsKWArgs})")
-def step_df_equal_to_table_w_kwargs(
-    context: Context, name: str, kwargs: Mapping[str, Any]
-):
+def step_df_equal_to_table_w_kwargs(context: Context, name: str, kwargs: Mapping[str, Any]):
     """Checks whether a dataframe is equal to the given table
     using :py:func:`compare_dataframes`.
 
@@ -151,14 +145,9 @@ def step_df_equal_to_table_w_kwargs(
     compare_dataframes(df1, df2, **kwargs)
 
 
-@then(
-    "dataframe {name1:w} is equal to dataframe {name2:w} "
-    "(kwargs: {kwargs:FrameEqualsKWArgs})"
-)
+@then("dataframe {name1:w} is equal to dataframe {name2:w} " "(kwargs: {kwargs:FrameEqualsKWArgs})")
 @then("dataframe {name1:w} equals {name2:w} ({kwargs:FrameEqualsKWArgs})")
-def step_df_equal_to_df_w_kwargs(
-    context: Context, name1: str, name2: str, kwargs: Mapping[str, Any]
-):
+def step_df_equal_to_df_w_kwargs(context: Context, name1: str, name2: str, kwargs: Mapping[str, Any]):
     """Checks whether two dataframes are equal
     using :py:func:`compare_dataframes`.
 
@@ -183,9 +172,7 @@ def step_df_equal_to_table(context: Context, name: str):
     :param name: the name of the variable in which the series is stored
     """
     series1 = get_var(context, name)
-    series2 = table_to_dataframe(
-        context.table, column_levels=DEFAULT_COLUMN_LEVEL
-    ).squeeze()
+    series2 = table_to_dataframe(context.table, column_levels=DEFAULT_COLUMN_LEVEL).squeeze()
     compare_series(series1, series2)
 
 
@@ -206,9 +193,7 @@ def step_df_equal_to_df(context: Context, name1: str, name2: str):
 
 @then("series {name:w} is equal to (kwargs: {kwargs:SeriesEqualsKWArgs})")
 @then("series {name:w} equals ({kwargs:SeriesEqualsKWArgs})")
-def step_df_equal_to_table_w_kwargs(
-    context: Context, name: str, kwargs: Mapping[str, Any]
-):
+def step_df_equal_to_table_w_kwargs(context: Context, name: str, kwargs: Mapping[str, Any]):
     """Checks whether a series is equal to the given table
     using :py:func:`compare_series`.
 
@@ -218,20 +203,13 @@ def step_df_equal_to_table_w_kwargs(
         to be passed to :py:func:`compare_series`
     """
     series1 = get_var(context, name)
-    series2 = table_to_dataframe(
-        context.table, column_levels=DEFAULT_COLUMN_LEVEL
-    ).squeeze()
+    series2 = table_to_dataframe(context.table, column_levels=DEFAULT_COLUMN_LEVEL).squeeze()
     compare_series(series1, series2, **kwargs)
 
 
-@then(
-    "series {name1:w} is equal to series {name2:w} "
-    "(kwargs: {kwargs:SeriesEqualsKWArgs})"
-)
+@then("series {name1:w} is equal to series {name2:w} " "(kwargs: {kwargs:SeriesEqualsKWArgs})")
 @then("series {name1:w} equals {name2:w} ({kwargs:SeriesEqualsKWArgs})")
-def step_df_equal_to_df_w_kwargs(
-    context: Context, name1: str, name2: str, kwargs: Mapping[str, Any]
-):
+def step_df_equal_to_df_w_kwargs(context: Context, name1: str, name2: str, kwargs: Mapping[str, Any]):
     """Checks whether two series are equal
     using :py:func:`compare_series`.
 

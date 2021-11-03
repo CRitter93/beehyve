@@ -1,6 +1,8 @@
 """Collection of functions to handle variables in the behave context."""
 
-from typing import Any
+import importlib
+import os
+from typing import Any, Optional
 
 from behave.runner import Context
 
@@ -42,3 +44,18 @@ def has_var(context: Context, name: str) -> bool:
     :return: True if the variable is present in the context, False otherwise
     """
     return "vars" in context and name in context.vars
+
+
+def get_env(name: str) -> str:
+    return os.getenv(name)
+
+
+def set_env(name: str, value: str):
+    os.environ[name] = value
+
+
+def get_from_module(module_name: str, object_name: Optional[str] = None) -> Any:
+    module = importlib.import_module(module_name)
+    if object_name:
+        return getattr(module, object_name)
+    return module

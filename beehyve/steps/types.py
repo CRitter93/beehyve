@@ -13,9 +13,7 @@ def parse_tuple(string: str) -> Tuple[Any, ...]:
     """
     tup = literal_eval(string)
     if not isinstance(tup, tuple):
-        raise ValueError(
-            f"the given value {string} cannot be interpreted as tuple"
-        )  # pragma: no cover
+        raise ValueError(f"the given value {string} cannot be interpreted as tuple")  # pragma: no cover
     return tup
 
 
@@ -27,9 +25,7 @@ def parse_dict(string: str) -> Dict[str, Any]:
     """
     dic = literal_eval(string)
     if not isinstance(dic, dict):
-        raise ValueError(
-            f"the given value {string} cannot be interpreted as dict"
-        )  # pragma: no cover
+        raise ValueError(f"the given value {string} cannot be interpreted as dict")  # pragma: no cover
     return dic
 
 
@@ -48,7 +44,7 @@ def parse_func_result(string: str) -> Tuple[str, ...]:
         return parse_tuple(string)
 
 
-@parse.with_pattern(r".+?(\..+?)+?")
+@parse.with_pattern(r"\w+?(\.\w+?)*?")
 def parse_module(string: str) -> str:
     """Used to type a module name (i.e., dot-separated module path) in behave."""
     return string
@@ -83,9 +79,7 @@ def parse_kwargs(string: str) -> Mapping[str, str]:
 
     kwargs_pairs = [kwargs_string.split("=") for kwargs_string in kwargs_strings]
 
-    kwargs = {
-        kwargs_name: kwargs_variable for kwargs_name, kwargs_variable in kwargs_pairs
-    }
+    kwargs = {kwargs_name: kwargs_variable for kwargs_name, kwargs_variable in kwargs_pairs}
 
     return kwargs
 

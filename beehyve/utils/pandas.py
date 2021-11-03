@@ -46,14 +46,10 @@ def compare_dataframes(
     if ignore_dtypes:
         assert_kwargs.update(IGNORE_DF_DTYPE_KWARGS)
 
-    pd.testing.assert_frame_equal(
-        df1, df2, atol=atol, rtol=rtol, check_exact=check_exact, **assert_kwargs
-    )
+    pd.testing.assert_frame_equal(df1, df2, atol=atol, rtol=rtol, check_exact=check_exact, **assert_kwargs)
 
 
-def _get_common_columns(
-    columns1: Sequence[str], columns2: Sequence[str]
-) -> Sequence[str]:
+def _get_common_columns(columns1: Sequence[str], columns2: Sequence[str]) -> Sequence[str]:
     return [col for col in columns1 if col in columns2]
 
 
@@ -80,6 +76,4 @@ def compare_series(
     if ignore_names:
         assert_kwargs["check_names"] = False
 
-    pd.testing.assert_series_equal(
-        series1, series2, atol=atol, rtol=rtol, check_exact=check_exact, **assert_kwargs
-    )
+    pd.testing.assert_series_equal(series1, series2, atol=atol, rtol=rtol, check_exact=check_exact, **assert_kwargs)

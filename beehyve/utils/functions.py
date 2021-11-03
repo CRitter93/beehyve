@@ -1,13 +1,12 @@
 """Collection of functions used to call arbitrary functions in step definitions."""
 
-import importlib
 import inspect
 from collections.abc import Iterable
 from typing import Any, Callable, Mapping, Optional, Sequence, Tuple, Union
 
 from behave.runner import Context
 
-from beehyve.utils.variables import add_var, get_var, has_var
+from beehyve.utils.variables import add_var, get_from_module, get_var, has_var
 
 
 def execute_function(
@@ -34,7 +33,7 @@ def execute_function(
     :param result_names: a tuple of variable names
         to which the result(s) of the function should be assigned
     """
-    func = _import_function(module, func_name)
+    func = get_from_module(module, func_name)
 
     args_vals = _load_args_from_context(context, args)
     kwargs_vals = _load_kwargs_from_context(context, kwargs)
@@ -44,24 +43,13 @@ def execute_function(
     _assign_results(context, results, result_names)
 
 
-def _import_function(module: str, func_name: str) -> Callable:
-    module_type = importlib.import_module(module)
-    func = getattr(module_type, func_name)
-
-    return func
-
-
 def _load_args_from_context(context: Context, args: Sequence[str]) -> Sequence[Any]:
     args_vals = [get_var(context, arg) for arg in args]
     return args_vals
 
 
-def _load_kwargs_from_context(
-    context: Context, kwargs: Mapping[str, str]
-) -> Mapping[str, Any]:
-    kwargs_vals = {
-        keyword: get_var(context, kwarg) for keyword, kwarg in kwargs.items()
-    }
+def _load_kwargs_from_context(context: Context, kwargs: Mapping[str, str]) -> Mapping[str, Any]:
+    kwargs_vals = {keyword: get_var(context, kwarg) for keyword, kwarg in kwargs.items()}
     return kwargs_vals
 
 
@@ -84,7 +72,7 @@ def execute_function_from_context(
     :param result_names: a tuple of variable names
         to which the result(s) of the function should be assigned
     """
-    func = _import_function(module, func_name)
+    func = get_from_module(module, func_name)
 
     signature = _get_func_signature(func)
 
@@ -109,12 +97,7 @@ def _check_func_signature(context: Context, signature: "SignatureHandler"):
     has_required_kwargs = signature.context_has_required_kwargs(context)
     has_required_varkw = signature.context_has_required_varkw(context)
 
-    if not (
-        has_required_args
-        and has_required_varargs
-        and has_required_kwargs
-        and has_required_varkw
-    ):
+    if not (has_required_args and has_required_varargs and has_required_kwargs and has_required_varkw):
         raise ValueError("Not all required arguments are in the context.")
 
 
@@ -138,8 +121,7 @@ def _assign_results(
 
     else:
         raise ValueError(
-            f"length mismatch of function returns ({len(results)}) "
-            f"and given variable names ({len(result_names)})"
+            f"length mismatch of function returns ({len(results)}) " f"and given variable names ({len(result_names)})"
         )
 
 
@@ -244,11 +226,7 @@ class SignatureHandler:
         return args_vals, kwargs_vals
 
     def _get_args_vals_from_context(self, context: Context):
-        return [
-            get_var(context, arg.name)
-            for arg in self._args
-            if has_var(context, arg.name)
-        ]
+        return [get_var(context, arg.name) for arg in self._args if has_var(context, arg.name)]
 
     def _get_varargs_vals_from_context(self, context: Context):
         if self._varargs and has_var(context, self._varargs.name):
@@ -256,11 +234,7 @@ class SignatureHandler:
         return tuple()
 
     def _get_kwargs_vals_from_context(self, context: Context):
-        return {
-            kwarg.name: get_var(context, kwarg.name)
-            for kwarg in self._kwargs
-            if has_var(context, kwarg.name)
-        }
+        return {kwarg.name: get_var(context, kwarg.name) for kwarg in self._kwargs if has_var(context, kwarg.name)}
 
     def _get_varkw_vals_from_context(self, context: Context):
         if self._varkw and has_var(context, self._varkw.name):

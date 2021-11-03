@@ -84,3 +84,20 @@ Feature: Example Variable Steps Feature
         Then l0 equals 1
         And db equals 5
         And t2 equals 8
+
+    Scenario: Set and check environment variables
+        Given the value of environment variable ENV_A is set to 1
+        And the value of environment variable ENV_B is set to abc
+        Then the value of environment variable ENV_A is 1
+        And the value of environment variable ENV_B is abc
+
+    Scenario: Set and check environment variables (alternative steps)
+        Given env(ENV_A) <- 1
+        And env(ENV_B) <- abc
+        Then env(ENV_A) equals 1
+        And env(ENV_B) equals abc
+
+    @dummy_env
+    Scenario: Check environment variables (from existing env)
+        Then env(ENV_A) equals 1
+        And env(ENV_B) equals abc
