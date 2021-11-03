@@ -32,16 +32,38 @@ def compare_dataframes(
     rtol: float = 1e-5,
     check_exact: bool = False,
 ):
+    """Compare two given dataframes.
+
+    Uses :py:func:`pd.testing.assert_frame_equal` to determine whether two dataframes are equal.
+
+    Ignores the order of columns in the dataframe.
+
+    :param df1: a dataframe
+    :param df2: another dataframe
+    :param common_columns_only: whether or not to only compare columns present in both dataframes.
+        If False, the assertion will fail if the dataframes have different columns.
+        Defaults to False
+    :param ignore_index: whether or not to ignore the index of the dataframes
+        (using :py:meth:`pd.DataFrame.reset_index`), defaults to False
+    :param ignore_dtypes: whether or not to ignore the dtypes when checking the dataframes, defaults to False
+    :param atol: absolute tolerance when comparing numerical values, defaults to 1e-8
+    :param rtol: relative tolerance when comparing numerical values, defaults to 1e-5
+    :param check_exact: whether or not to check for exact values, defaults to False
+    """
     assert_kwargs = {}
 
     if ignore_index:
         df1 = df1.reset_index(drop=True)
         df2 = df2.reset_index(drop=True)
 
-    if common_columns_only:
-        columns_to_compare = _get_common_columns(df1.columns, df2.columns)
-        df1 = df1[columns_to_compare]
-        df2 = df2[columns_to_compare]
+    columns_to_compare = _get_common_columns(df1.columns, df2.columns)
+
+    if not common_columns_only:
+        if len(columns_to_compare) != len(df1.columns) or len(columns_to_compare) != len(df2.columns):
+            raise AssertionError(f"Columns of dataframes do not match. Got {df1.columns} and {df2.columns}")
+
+    df1 = df1[columns_to_compare]
+    df2 = df2[columns_to_compare]
 
     if ignore_dtypes:
         assert_kwargs.update(IGNORE_DF_DTYPE_KWARGS)
@@ -64,6 +86,20 @@ def compare_series(
     rtol: float = 1e-5,
     check_exact: bool = False,
 ):
+    """Compare two given series.
+
+    Uses :py:func:`pd.testing.assert_series_equal` to determine whether two series are equal.
+
+    :param df1: a series
+    :param df2: another series
+    :param ignore_index: whether or not to ignore the index of the series
+        (using :py:meth:`pd.Series.reset_index`), defaults to False
+    :param ignore_dtypes: whether or not to ignore the dtypes when checking the series, defaults to False
+    :param ignore_names: whether to ignore the Series and Index names attribute, defaults to False
+    :param atol: absolute tolerance when comparing numerical values, defaults to 1e-8
+    :param rtol: relative tolerance when comparing numerical values, defaults to 1e-5
+    :param check_exact: whether or not to check for exact values, defaults to False
+    """
     assert_kwargs = {}
 
     if ignore_index:

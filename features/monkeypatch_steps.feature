@@ -31,7 +31,7 @@ Feature: Test monkeypatching
 
     @monkeypatch
     Scenario: Monkeypatch a property
-        Given the attribute some_property of object SomeObject of module features.example_functions is monkeypatched to "xyz"
+        Given the attribute some_property of class SomeObject of module features.example_functions is monkeypatched to "xyz"
         When property_value <- features.example_functions.get_some_property_from_some_object()
         Then property_value equals "xyz"
 
@@ -43,7 +43,7 @@ Feature: Test monkeypatching
 
     @monkeypatch
     Scenario: Monkeypatch a constant with another constant
-        Given the attribute SOME_CONSTANT of module features.example_functions is monkeypatched to object ANOTHER_CONSTANT of module features.example_functions
+        Given the attribute SOME_CONSTANT of module features.example_functions is monkeypatched to attribute ANOTHER_CONSTANT of module features.example_functions
         When constant_value <- features.example_functions.get_some_constant()
         Then constant_value equals "tuvxyz"
 
@@ -55,7 +55,7 @@ Feature: Test monkeypatching
 
     @monkeypatch
     Scenario: Monkeypatch a property with another function
-        Given the attribute some_property of object SomeObject of module features.example_functions is monkeypatched to object SOME_CONSTANT of module features.example_functions
+        Given the attribute some_property of class SomeObject of module features.example_functions is monkeypatched to attribute SOME_CONSTANT of module features.example_functions
         When property_value <- features.example_functions.get_some_property_from_some_object()
         Then property_value equals "abcdef"
 
@@ -66,7 +66,7 @@ Feature: Test monkeypatching
         Then property_value equals "abcdef"
 
     @monkeypatch
-    Scenario: Monkeypatch an object with another object
+    Scenario: Monkeypatch a class with another class
         Given features.example_functions[SomeObject] <-monkeypatch- features.example_functions.AnotherObject
         When property_value <- features.example_functions.get_some_property_from_some_object()
         Then property_value equals 987654

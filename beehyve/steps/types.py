@@ -1,3 +1,5 @@
+"""Collection of type definitions for regex matching in behave steps."""
+
 import re
 from ast import literal_eval
 from typing import Any, Callable, Dict, Mapping, Sequence, Tuple
@@ -9,11 +11,11 @@ import parse
 def parse_tuple(string: str) -> Tuple[Any, ...]:
     """Parse a tuple from a given string.
 
-    Uses :py:func:`literal_eval` to parse the values.
+    Uses :py:func:`ast.literal_eval` to parse the values.
     """
     tup = literal_eval(string)
     if not isinstance(tup, tuple):
-        raise ValueError(f"the given value {string} cannot be interpreted as tuple")  # pragma: no cover
+        raise ValueError(f"the given value {string} cannot be interpreted as tuple")
     return tup
 
 
@@ -21,17 +23,18 @@ def parse_tuple(string: str) -> Tuple[Any, ...]:
 def parse_dict(string: str) -> Dict[str, Any]:
     """Parse a dict from a given string.
 
-    Uses :py:func:`literal_eval` to parse the values.
+    Uses :py:func:`ast.literal_eval` to parse the values.
     """
     dic = literal_eval(string)
     if not isinstance(dic, dict):
-        raise ValueError(f"the given value {string} cannot be interpreted as dict")  # pragma: no cover
+        raise ValueError(f"the given value {string} cannot be interpreted as dict")
     return dic
 
 
 @parse.with_pattern(r"(\((\w+?, ?)+?\w*?\)|\w*?)")
 def parse_func_result(string: str) -> Tuple[str, ...]:
     """Parse a tuple of strings from a given string.
+
     If only a single string is passed it is added to a tuple.
     Uses :func:`parse_tuple` to do the actual parsing.
     """
@@ -46,7 +49,7 @@ def parse_func_result(string: str) -> Tuple[str, ...]:
 
 @parse.with_pattern(r"\w+?(\.\w+?)*?")
 def parse_module(string: str) -> str:
-    """Used to type a module name (i.e., dot-separated module path) in behave."""
+    """Parse a module name (i.e., dot-separated module path) from a given string."""
     return string
 
 
@@ -66,9 +69,7 @@ def parse_args(string: str) -> Sequence[str]:
 
 @parse.with_pattern(r"(\w+? ?= ?\w+?, ?)*?(\w+? ?= ?\w+?)?")
 def parse_kwargs(string: str) -> Mapping[str, str]:
-    """Parse keyword arguments given as comma separated list of assignments,
-    e.g., :code:`a=var_1, b=var_2, d=var_3`
-    """
+    """Parse keyword arguments given as comma separated list of assignments, e.g., :code:`a=var_1, b=var_2, d=var_3`."""
     if string == "":
         return dict
 
@@ -93,6 +94,28 @@ def parse_csv_file_path(string: str) -> str:
 def create_limited_kwarg_parser(
     allowed_kwargs: Sequence[str],
 ) -> Callable[[str], Mapping[str, Any]]:
+    """Create a regex parsing function for a given list of allowed keyword arguments.
+
+    For example:
+
+    .. code-block:: python
+
+        create_limited_kwarg_parser(["kw1", "kw2", "kw3"])
+
+        # is equivalent to
+
+        @parse.with_pattern(r"((kw1|kw2|kw3) ?= ?.+?, ?)*?((kw1|kw2|kw3) ?= ?.+?)?")
+        def _parse_limited_kwargs(string: str) -> Mapping[str, Any]:
+            ...
+
+        # and would, e.g., match
+        # "kw1 = 5"
+        # "kw2 = 3, kw1 = 7"
+        # "kw1 = 1, kw2 = 2, kw3 = 3"
+
+    :param allowed_kwargs: sequence of allowed keyword arguments
+    :return: a parsing function for keyword argument assignments
+    """
     kwarg_names_regex = "|".join(allowed_kwargs)
     pattern = fr"(({kwarg_names_regex}) ?= ?.+?, ?)*?(({kwarg_names_regex}) ?= ?.+?)?"
 

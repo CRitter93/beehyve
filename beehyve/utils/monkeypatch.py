@@ -25,7 +25,7 @@ def use_monkeypatching(context: Context) -> Generator[MonkeyPatch, None, None]:
 
 
 def before_tag(context: Context, tag: str):
-    """Implementation of behave's `before_tag` function for using monkeypatching.
+    """Handle tags in behave feature files for using monkeypatching.
 
     Scenarios relying on monkeypatching can be tagged using :code:`@monkeypatch`.
 
@@ -52,23 +52,22 @@ def monkeypatch_attr(
     context: Context,
     *,
     module_name: str,
-    object_name: Optional[str] = None,
+    class_name: Optional[str] = None,
     attribute_name: str,
     value: Any,
 ):
-    """Use monkeypatching to overwrite any attribute from an object.
+    """Use monkeypatching to overwrite any attribute from a class.
 
     :param context: the current context
-    :param module_name: the name of the module containing the object
-        or attribute, if no object_name is given
-    :param object_name: name of the object containing the attribute to overwrite
+    :param module_name: the name of the module containing the class or attribute, if no class_name is given
+    :param class_name: name of the class containing the attribute to overwrite
         or `None` if the attribute is part of a module, defaults to None
     :param attribute_name: the name of the attribute to overwrite
     :param value: the value to use for the attribute
     """
     _verify_fixture(context)
 
-    obj = get_from_module(module_name, object_name)
+    obj = get_from_module(module_name, class_name)
 
     context.monkeypatch.setattr(obj, attribute_name, value)
 

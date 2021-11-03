@@ -26,12 +26,9 @@ def execute_function(
     :param func_name: the name of the function to execute
     :param module: the module where the function can be found,
         i.e., you should be able to import <func_name> from <module>
-    :param args: variable names of the variables
-        which should be used as arguments to the function
-    :param kwargs: a mapping of function kwarg to variable name
-        which should be passed to the function
-    :param result_names: a tuple of variable names
-        to which the result(s) of the function should be assigned
+    :param args: variable names of the variables which should be used as arguments to the function
+    :param kwargs: a mapping of function kwarg to variable name which should be passed to the function
+    :param result_names: a tuple of variable names to which the result(s) of the function should be assigned
     """
     func = get_from_module(module, func_name)
 
@@ -69,8 +66,7 @@ def execute_function_from_context(
     :param func_name: the name of the function to execute
     :param module: the module where the function can be found,
         i.e., you should be able to import <func_name> from <module>
-    :param result_names: a tuple of variable names
-        to which the result(s) of the function should be assigned
+    :param result_names: a tuple of variable names to which the result(s) of the function should be assigned
     """
     func = get_from_module(module, func_name)
 
@@ -210,8 +206,7 @@ class SignatureHandler:
         """Get all argument values corresponding to this signature from the context.
 
         :param context: the current context
-        :return: args (positional args and varargs in correct order),
-            kwargs (keyword only args and varkw as mapping)
+        :return: args (positional args and varargs in correct order), kwargs (keyword only args and varkw as mapping)
         """
         args_vals = self._get_args_vals_from_context(context)
         varargs_vals = self._get_varargs_vals_from_context(context)
@@ -246,10 +241,12 @@ class SignatureHandler:
 
     @staticmethod
     def _varargs_vals_to_tuple(varargs_vals):
-        if not isinstance(varargs_vals, tuple):
-            if isinstance(varargs_vals, Iterable) and not isinstance(varargs_vals, str):
-                varargs_vals = tuple(varargs_vals)
-            else:
-                varargs_vals = (varargs_vals,)
+        if isinstance(varargs_vals, tuple):
+            return varargs_vals
+
+        if isinstance(varargs_vals, Iterable) and not isinstance(varargs_vals, str):
+            varargs_vals = tuple(varargs_vals)
+        else:
+            varargs_vals = (varargs_vals,)
 
         return varargs_vals

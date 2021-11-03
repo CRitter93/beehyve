@@ -1,3 +1,6 @@
+"""Python file setting up the environment for testing in beehyve."""
+# flake8: noqa
+
 import os
 
 from behave.runner import Context

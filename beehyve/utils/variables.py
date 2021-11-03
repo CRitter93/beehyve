@@ -47,15 +47,31 @@ def has_var(context: Context, name: str) -> bool:
 
 
 def get_env(name: str) -> str:
+    """Get the value from the given environment variable.
+
+    :param name: the name of the environment variable
+    :return: the value assigned to the given environment variable
+    """
     return os.getenv(name)
 
 
 def set_env(name: str, value: str):
+    """Set the value of an environment variable.
+
+    :param name: the name of the variable to set
+    :param value: the value to assign to the environment variable
+    """
     os.environ[name] = value
 
 
-def get_from_module(module_name: str, object_name: Optional[str] = None) -> Any:
+def get_from_module(module_name: str, attribute_name: Optional[str] = None) -> Any:
+    """Get a module or an attribute from a module.
+
+    :param module_name: a module to import
+    :param attribute_name: an attribute to get from the module, defaults to None
+    :return: the given attribute from the module or the whole module if no attribute is given
+    """
     module = importlib.import_module(module_name)
-    if object_name:
-        return getattr(module, object_name)
+    if attribute_name:
+        return getattr(module, attribute_name)
     return module
