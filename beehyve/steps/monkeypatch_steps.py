@@ -15,7 +15,7 @@ register_type(Module=types.parse_module)
 
 @given("the value of environment variable {name:w} is monkeypatched to {value}")
 @given("env({name:w}) <-monkeypatch- {value}")
-def step_monkeypatch_set_env(context: Context, name: str, value: str):
+def step_monkeypatch_set_env(context: Context, name: str, value: str) -> None:
     """Apply monkeypatching to set an environment variable.
 
     See :py:func:`monkeypatch_env` for more detail.
@@ -39,14 +39,15 @@ def step_monkeypatch_set_env(context: Context, name: str, value: str):
     "{module_name:Module}.{class_name:w}[{attribute_name:w}] "
     "<-monkeypatch- {other_module_name:Module}.{other_attribute_name:w}"
 )
-def step_monkeypatch_set_attr_to_class(
+@given("{module_name:w}[{attribute_name:w}] <-monkeypatch- {other_module_name:Module}.{other_attribute_name:w}")
+def step_monkeypatch_set_attr_to_attr(
     context: Context,
     module_name: str,
     attribute_name: str,
     other_module_name: str,
     other_attribute_name: str,
     class_name: str = None,
-):
+) -> None:
     """Apply monkeypatching to overwrite an attribute with a python class, constant, or function.
 
     See :py:func:`monkeypatch_attr` for more detail.
@@ -75,13 +76,14 @@ def step_monkeypatch_set_attr_to_class(
 )
 @given("{module_name:Module}.{class_name:w}[{attribute_name:w}] <-monkeypatch- {value}")
 @given("the attribute {attribute_name:w} of module {module_name:Module} is monkeypatched to {value}")
+@given("{module_name:w}[{attribute_name:w}] <-monkeypatch- {value}")
 def step_monkeypatch_set_attr_to_value(
     context: Context,
     module_name: str,
     attribute_name: str,
     value: str,
     class_name: Optional[str] = None,
-):
+) -> None:
     """Apply monkeypatching to overwrite an attribute with a value.
 
     See :py:func:`monkeypatch_attr` for more detail.

@@ -12,20 +12,20 @@ from beehyve.utils.variables import add_var, get_env, get_var, set_env
 register_type(Result=types.parse_func_result)
 
 
-@given("the value {val} is loaded into variable {name:w}")
-@given("{name:w} <- {val}")
-def step_load_value_into_variable(context: Context, val: Any, name: str):
+@given("the value {value} is loaded into variable {name:w}")
+@given("{name:w} <- {value}")
+def step_load_value_into_variable(context: Context, value: Any, name: str) -> None:
     """Load a value into a variable.
 
     :param context: the current context
     :param val: a value to be loaded
     :param name: the name of the variable to which the value should be assigned
     """
-    add_var(context, name, literal_eval(val))
+    add_var(context, name, literal_eval(value))
 
 
 @given("the following variables are loaded")
-def step_load_table_into_variables(context: Context):
+def step_load_table_into_variables(context: Context) -> None:
     """Load a table of values into variables.
 
     :param context: the current context
@@ -42,7 +42,7 @@ def step_load_table_into_variables(context: Context):
 
 @then("the value of variable {name:w} is {expected_value}")
 @then("{name:w} equals {expected_value}")
-def step_variable_equal_to_value(context: Context, name: str, expected_value: str):
+def step_variable_equal_to_value(context: Context, name: str, expected_value: str) -> None:
     """Check whether a variable is equal to a value.
 
     :param context: the current context
@@ -55,7 +55,7 @@ def step_variable_equal_to_value(context: Context, name: str, expected_value: st
 
 @then("the type of variable {name:w} is {expected_type:w}")
 @then("type({name:w}) equals {expected_type:w}")
-def step_variable_type_equal_to(context: Context, name: str, expected_type: str):
+def step_variable_type_equal_to(context: Context, name: str, expected_type: str) -> None:
     """Check whether the type of a variable matches a given type.
 
     :param context: the current context
@@ -68,7 +68,7 @@ def step_variable_type_equal_to(context: Context, name: str, expected_type: str)
 
 @step("the variable {name:w} is unpacked into {new_names:Result}")
 @step("{new_names:Result} <- {name:w}")
-def step_variable_repacking(context: Context, name: str, new_names: Tuple[str]):
+def step_variable_repacking(context: Context, name: str, new_names: Tuple[str]) -> None:
     """Unpack a single iterable variable into new variable names, e.g., :code:`(a, b, c) = [1, 2, 3]`.
 
     :param context: the current context
@@ -87,7 +87,7 @@ def step_variable_repacking(context: Context, name: str, new_names: Tuple[str]):
 
 @step("the element {key} of variable {name:w} is stored in new variable {new_name:w}")
 @step("{new_name:w} <- {name:w}[{key}]")
-def step_get_element(context: Context, name: str, key: str, new_name: str):
+def step_get_element(context: Context, name: str, key: str, new_name: str) -> None:
     """Assign a single element from a variable to a new variable.
 
     :param context: the current context
@@ -103,7 +103,7 @@ def step_get_element(context: Context, name: str, key: str, new_name: str):
 
 @given("the value of environment variable {name:w} is set to {value}")
 @given("env({name:w}) <- {value}")
-def step_set_env(_context: Context, name: str, value: str):
+def step_set_env(_context: Context, name: str, value: str) -> None:
     """Set the given environment variable to the given value.
 
     See :py:func:`set_env` for more detail.
@@ -117,7 +117,7 @@ def step_set_env(_context: Context, name: str, value: str):
 
 @then("the value of environment variable {name:w} is {expected_value}")
 @then("env({name:w}) equals {expected_value}")
-def step_get_env(_context: Context, name: str, expected_value: str):
+def step_get_env(_context: Context, name: str, expected_value: str) -> None:
     """Check whether the given environment variable has the expected value.
 
     :param _context: the current context

@@ -31,7 +31,7 @@ def compare_dataframes(
     atol: float = 1e-8,
     rtol: float = 1e-5,
     check_exact: bool = False,
-):
+) -> None:
     """Compare two given dataframes.
 
     Uses :py:func:`pd.testing.assert_frame_equal` to determine whether two dataframes are equal.
@@ -85,7 +85,7 @@ def compare_series(
     atol: float = 1e-8,
     rtol: float = 1e-5,
     check_exact: bool = False,
-):
+) -> None:
     """Compare two given series.
 
     Uses :py:func:`pd.testing.assert_series_equal` to determine whether two series are equal.

@@ -2,7 +2,7 @@
 
 import inspect
 from collections.abc import Iterable
-from typing import Any, Callable, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 from behave.runner import Context
 
@@ -17,7 +17,7 @@ def execute_function(
     args: Sequence[str],
     kwargs: Mapping[str, str],
     result_names: Tuple[str, ...] = (),
-):
+) -> None:
     """Import and run a function from a given module.
 
     Uses the given args and kwargs from the context as arguments.
@@ -56,7 +56,7 @@ def execute_function_from_context(
     func_name: str,
     module: str,
     result_names: Tuple[str, ...] = (),
-):
+) -> None:
     """Import and run a function from a given module.
 
     It expects the variables in the context to have the exact same names
@@ -87,7 +87,7 @@ def _get_func_signature(func: Callable) -> "SignatureHandler":
     return SignatureHandler(signature)
 
 
-def _check_func_signature(context: Context, signature: "SignatureHandler"):
+def _check_func_signature(context: Context, signature: "SignatureHandler") -> None:
     has_required_args = signature.context_has_required_args(context)
     has_required_varargs = signature.context_has_required_varargs(context)
     has_required_kwargs = signature.context_has_required_kwargs(context)
@@ -101,7 +101,7 @@ def _assign_results(
     context: Context,
     results: Optional[Union[Any, Tuple[Any, ...]]],
     result_names: Tuple[str, ...],
-):
+) -> None:
     if results is None and len(result_names) == 0:
         return
 
@@ -124,7 +124,7 @@ def _assign_results(
 class SignatureHandler:
     """Handler to deal with function signatures."""
 
-    def __init__(self, signature: inspect.Signature):
+    def __init__(self, signature: inspect.Signature) -> None:
         """Initialize a handler for the given signature.
 
         :param signature: a signature object
@@ -220,18 +220,18 @@ class SignatureHandler:
 
         return args_vals, kwargs_vals
 
-    def _get_args_vals_from_context(self, context: Context):
+    def _get_args_vals_from_context(self, context: Context) -> List[Any]:
         return [get_var(context, arg.name) for arg in self._args if has_var(context, arg.name)]
 
-    def _get_varargs_vals_from_context(self, context: Context):
+    def _get_varargs_vals_from_context(self, context: Context) -> Union[Any, Tuple]:
         if self._varargs and has_var(context, self._varargs.name):
             return get_var(context, self._varargs.name)
         return tuple()
 
-    def _get_kwargs_vals_from_context(self, context: Context):
+    def _get_kwargs_vals_from_context(self, context: Context) -> Dict[str, Any]:
         return {kwarg.name: get_var(context, kwarg.name) for kwarg in self._kwargs if has_var(context, kwarg.name)}
 
-    def _get_varkw_vals_from_context(self, context: Context):
+    def _get_varkw_vals_from_context(self, context: Context) -> Dict[str, Any]:
         if self._varkw and has_var(context, self._varkw.name):
             varkw_vals = get_var(context, self._varkw.name)
             if not isinstance(varkw_vals, dict):
@@ -240,7 +240,7 @@ class SignatureHandler:
         return dict()
 
     @staticmethod
-    def _varargs_vals_to_tuple(varargs_vals):
+    def _varargs_vals_to_tuple(varargs_vals: Any) -> Tuple[Any, ...]:
         if isinstance(varargs_vals, tuple):
             return varargs_vals
 

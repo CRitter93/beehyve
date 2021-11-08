@@ -71,7 +71,7 @@ def parse_args(string: str) -> Sequence[str]:
 def parse_kwargs(string: str) -> Mapping[str, str]:
     """Parse keyword arguments given as comma separated list of assignments, e.g., :code:`a=var_1, b=var_2, d=var_3`."""
     if string == "":
-        return dict
+        return dict()
 
     kwargs_strings = string.replace(" ", "").split(",")
 

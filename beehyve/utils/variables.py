@@ -7,7 +7,7 @@ from typing import Any, Optional
 from behave.runner import Context
 
 
-def add_var(context: Context, name: str, val: Any):
+def add_var(context: Context, name: str, val: Any) -> None:
     """Add a variable to the context, making it available in future steps.
 
     :param context: the current context
@@ -52,10 +52,13 @@ def get_env(name: str) -> str:
     :param name: the name of the environment variable
     :return: the value assigned to the given environment variable
     """
-    return os.getenv(name)
+    env_value = os.getenv(name)
+    if env_value is None:
+        raise AssertionError(f"No value set for environment variable {name}")
+    return env_value
 
 
-def set_env(name: str, value: str):
+def set_env(name: str, value: str) -> None:
     """Set the value of an environment variable.
 
     :param name: the name of the variable to set

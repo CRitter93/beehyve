@@ -24,7 +24,7 @@ def use_monkeypatching(context: Context) -> Generator[MonkeyPatch, None, None]:
     context.monkeypatch.undo()
 
 
-def before_tag(context: Context, tag: str):
+def before_tag(context: Context, tag: str) -> None:
     """Handle tags in behave feature files for using monkeypatching.
 
     Scenarios relying on monkeypatching can be tagged using :code:`@monkeypatch`.
@@ -36,7 +36,7 @@ def before_tag(context: Context, tag: str):
         use_fixture(use_monkeypatching, context)
 
 
-def monkeypatch_env(context: Context, *, name: str, value: str):
+def monkeypatch_env(context: Context, *, name: str, value: str) -> None:
     """Use monkeypatching to overwrite an environment variable.
 
     :param context: the current context
@@ -55,7 +55,7 @@ def monkeypatch_attr(
     class_name: Optional[str] = None,
     attribute_name: str,
     value: Any,
-):
+) -> None:
     """Use monkeypatching to overwrite any attribute from a class.
 
     :param context: the current context
@@ -72,6 +72,6 @@ def monkeypatch_attr(
     context.monkeypatch.setattr(obj, attribute_name, value)
 
 
-def _verify_fixture(context: Context):
+def _verify_fixture(context: Context) -> None:
     if "monkeypatch" not in context:
         raise KeyError("When using monkeypatching, a fixture needs to be used.")

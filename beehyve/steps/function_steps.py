@@ -20,7 +20,7 @@ register_type(KWArguments=types.parse_kwargs)
 @when("{module:Module}.{func_name:w}() is called")
 def step_execute_function_from_context(
     context: Context, func_name: str, module: str, result_names: Tuple[str, ...] = ()
-):
+) -> None:
     """Execute an arbitrary python function using the variables in the context.
 
     For more details see :py:func:`execute_function_from_context`.
@@ -52,7 +52,7 @@ def step_execute_function_with_given_variables(
     args: Sequence[str],
     kwargs: Mapping[str, str],
     result_names: Tuple[str, ...] = (),
-):
+) -> None:
     """Execute an arbitrary python function using the given variables names as args and kwargs.
 
     For more details see :py:func:`execute_function`.
