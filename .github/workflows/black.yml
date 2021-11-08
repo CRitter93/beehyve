@@ -1,4 +1,4 @@
-name: Lint
+name: Black
 
 on: [push, pull_request]
 
@@ -10,4 +10,4 @@ jobs:
       - uses: actions/setup-python@v2
       - uses: psf/black@stable
         with:
-          black_args: ". --check -l 120"
+          options: ". --check -l 120"

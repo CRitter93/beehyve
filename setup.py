@@ -21,6 +21,7 @@ REQUIRED = [
     "pandas>=1.3,<1.4",
     "behave-pandas>=0.4,<0.5",
     "parse>=1.19,<1.20",
+    "pytest>=6.2.5,<6.3",
 ]
 EXTRAS = {
     "dev": [

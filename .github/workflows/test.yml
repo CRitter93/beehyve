@@ -19,7 +19,7 @@ jobs:
       - name: dependencies
         run: |
           python -m pip install --upgrade pip
-          python setup.py install
+          python -m pip install -e .
       - name: behave tests
         run: |
           behave
