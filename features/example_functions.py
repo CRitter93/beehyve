@@ -1,4 +1,22 @@
+# flake8: noqa
+
 import pandas as pd
+
+SOME_CONSTANT = "abcdef"
+
+ANOTHER_CONSTANT = "tuvxyz"
+
+
+class SomeObject:
+    @property
+    def some_property(self):
+        return 123456
+
+
+class AnotherObject:
+    @property
+    def some_property(self):
+        return 987654
 
 
 def add_2_to_dataframe(df, col):
@@ -8,9 +26,7 @@ def add_2_to_dataframe(df, col):
 
 
 def create_new_df(fill_val=0):
-    return pd.DataFrame(
-        {col: [fill_val for _ in range(3)] for col in ("col_a", "col_b", "col_c")}
-    )
+    return pd.DataFrame({col: [fill_val for _ in range(3)] for col in ("col_a", "col_b", "col_c")})
 
 
 def join_args(*args):
@@ -49,3 +65,19 @@ def do_nothing():
 
 def join_wo_defaults(*args, d, e, **kwargs):
     return join(*args, d=d, e=e, **kwargs)
+
+
+def do_nothing_w_input(*args, **kwargs):
+    return
+
+
+def get_some_constant():
+    return SOME_CONSTANT
+
+
+def return_abc():
+    return "abc"
+
+
+def get_some_property_from_some_object():
+    return SomeObject().some_property

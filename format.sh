@@ -1,4 +1,4 @@
 #!/bin/bash
-isort .
+isort --profile black .
 autoflake -r --in-place --remove-unused-variables .
-black .
+black -l 120 .
