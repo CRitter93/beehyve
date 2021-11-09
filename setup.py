@@ -35,7 +35,11 @@ EXTRAS = {
         "pydocstyle>=6.1.1",
         "mypy>=0.910",
         "bandit>=1.7.0",
-    ]
+    ],
+    "doc": [
+        "sphinx-rtd-theme>=1",
+        "m2r2",
+    ],
 }
 
 # Package setup
