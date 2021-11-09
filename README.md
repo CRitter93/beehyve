@@ -13,6 +13,17 @@ Hijacking [behave](https://behave.readthedocs.io/en/stable/) to test data pipeli
 
 ---
 
+**Table of Contents**
+* [Documentation](#documentation)
+* [Installation](#installation)
+* [VS Code Integration](#vs-code-integration)
+* [Usage](#usage)
+* [Examples](#examples)
+* [Step Documentation](#step-documentation)
+* [Not-yet-frequently Asked Questions](#not-yet-frequently-asked-questions)
+
+---
+
 # Documentation
 
 See documentation at [readthedocs](https://beehyve.readthedocs.io/en/latest/).
@@ -35,6 +46,24 @@ To install beehyve using pip run the following code:
 ```bash
 python -m pip install git+https://github.com/CRitter93/beehyve.git#egg=beehyve
 ```
+
+# VS Code Integration
+When using VS Code I would recommend to install the [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete) extension to format your `.feature` files.
+In order to enable autocompletion for beehyve steps, create a "stub" file of the beehyve steps after installation using
+```bash
+create-beehyve-stubs
+```
+after installing beehyve.
+It will create a `beehyve_stubs` file that you can add to your `.vscode/settings.json`:
+```json
+{
+    "cucumberautocomplete.steps": [
+        "<path_to_beehyve_stubs_file>"
+    ]
+}
+```
+
+Use `create-beehyve-stubs --help` to get additional information.
 
 # Usage
 To use the steps defined by beehyve add an import script into your features/steps folder:

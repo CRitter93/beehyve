@@ -57,4 +57,9 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     setup_requires=["wheel"],
+    entry_points={
+        "console_scripts": [
+            "create-beehyve-stubs=beehyve.create_beehyve_step_stubs:main",
+        ],
+    },
 )
