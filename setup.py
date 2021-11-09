@@ -28,6 +28,11 @@ EXTRAS = {
         "black>=20.8b0,<21",
         "coverage>=5.5,<6",
         "isort>=5.9.3,<6",
+        "flake8>=3.9.2,<3.10",
+        "flake8-docstrings>=1.6.0,<1.7",
+        "pep8-naming>=0.10.0,<0.11",
+        "mccabe>=0.6.1,<0.7",
+        "pydocstyle>=6.1.1,<6.2",
     ]
 }
 
