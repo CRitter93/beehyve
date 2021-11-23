@@ -1,30 +1,30 @@
+beehyve package
+===============
+
+Subpackages
+-----------
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 4
+
+   beehyve.steps
+   beehyve.utils
 
 Submodules
-##################
+----------
 
-beehyve.functions module
-------------------------
+beehyve.create\_beehyve\_step\_stubs module
+-------------------------------------------
 
-.. automodule:: beehyve.functions
+.. automodule:: beehyve.create_beehyve_step_stubs
    :members:
    :undoc-members:
    :show-inheritance:
 
-beehyve.steps module
---------------------
+Module contents
+---------------
 
-.. automodule:: beehyve.steps
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-beehyve.types module
---------------------
-
-.. automodule:: beehyve.types
+.. automodule:: beehyve
    :members:
    :undoc-members:
    :show-inheritance:

@@ -13,6 +13,17 @@ Hijacking [behave](https://behave.readthedocs.io/en/stable/) to test data pipeli
 
 ---
 
+**Table of Contents**
+* [Documentation](#documentation)
+* [Installation](#installation)
+* [VS Code Integration](#vs-code-integration)
+* [Usage](#usage)
+* [Examples](#examples)
+* [Step Documentation](#step-documentation)
+* [Not-yet-frequently Asked Questions](#not-yet-frequently-asked-questions)
+
+---
+
 # Documentation
 
 See documentation at [readthedocs](https://beehyve.readthedocs.io/en/latest/).
@@ -27,7 +38,7 @@ To install the latest version from sources use:
 ```bash
 git clone https://github.com/CRitter93/beehyve.git
 cd beehyve
-python setup.py install
+pip install -e .
 ```
 
 ## Install using pip
@@ -35,6 +46,31 @@ To install beehyve using pip run the following code:
 ```bash
 python -m pip install git+https://github.com/CRitter93/beehyve.git#egg=beehyve
 ```
+
+## Install for development
+```bash
+git clone https://github.com/CRitter93/beehyve.git
+cd beehyve
+pip install -e ".[dev,doc]"
+```
+
+# VS Code Integration
+When using VS Code I would recommend to install the [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete) extension to format your `.feature` files.
+In order to enable autocompletion for beehyve steps, create a "stub" file of the beehyve steps after installation using
+```bash
+create-beehyve-stubs
+```
+after installing beehyve.
+It will create a `beehyve_stubs` file that you can add to your `.vscode/settings.json`:
+```json
+{
+    "cucumberautocomplete.steps": [
+        "<path_to_beehyve_stubs_file>"
+    ]
+}
+```
+
+Use `create-beehyve-stubs --help` to get additional information.
 
 # Usage
 To use the steps defined by beehyve add an import script into your features/steps folder:
@@ -108,12 +144,12 @@ More example uses of the beehyve steps can be found in the `.feature` files in [
 # Step Documentation
 
 ## Variable Steps
-The steps in [`beehyve/steps/variable_steps.py`](https://github.com/CRitter93/beehyve/tree/main/beehyve/steps/variable_steps.py) are used to add variables to a test context and test variables.
+The steps in [beehyve/steps/variable_steps.py](https://github.com/CRitter93/beehyve/tree/main/beehyve/steps/variable_steps.py) are used to add variables to a test context and test variables.
 
 ---
 
 **Given**
-```
+```gherkin
 the value {value} is loaded into variable {name:w}
 
 - or -
@@ -122,7 +158,7 @@ the value {value} is loaded into variable {name:w}
 ```
 
 Load a value into a variable of the context.
-Uses [`ast.literal_eval`](https://docs.python.org/3/library/ast.html#ast.literal_eval) to interpret the value.
+Uses [ast.literal_eval](https://docs.python.org/3/library/ast.html#ast.literal_eval) to interpret the value.
 
 Arguments:
 * `name`: the name of the new variable, only characters, digits, and underscores are allowed (corresponds to python's regex `\w`)
@@ -131,7 +167,7 @@ Arguments:
 ---
 
 **Given**
-```
+```gherkin
 the following variables are loaded
 ```
 
@@ -143,7 +179,7 @@ Arguments:
 ---
 
 **Then**
-```
+```gherkin
 the value of variable {name:w} is {expected_value}
 
 - or -
@@ -152,7 +188,7 @@ the value of variable {name:w} is {expected_value}
 ```
 
 Checks whether the value assigned to a variable equals a given expected value.
-Uses [`ast.literal_eval`](https://docs.python.org/3/library/ast.html#ast.literal_eval) to interpret the expected value.
+Uses [ast.literal_eval](https://docs.python.org/3/library/ast.html#ast.literal_eval) to interpret the expected value.
 
 Arguments:
 * `name`: the name of the variable to check, only characters, digits, and underscores are allowed (corresponds to python's regex `\w`)
@@ -161,7 +197,7 @@ Arguments:
 ---
 
 **Then**
-```
+```gherkin
 the type of variable {name:w} is {expected_type:w}
 
 - or -
@@ -179,7 +215,7 @@ Arguments:
 ---
 
 **Given/When/Then**
-```
+```gherkin
 the variable {name:w} is unpacked into {new_names:Result}
 
 - or -
@@ -197,7 +233,7 @@ Arguments:
 ---
 
 **Given/When/Then**
-```
+```gherkin
 the element {key} of variable {name:w} is stored in new variable {new_name:w}
 
 - or -
@@ -206,7 +242,7 @@ the element {key} of variable {name:w} is stored in new variable {new_name:w}
 ```
 
 Assign a single element of a collection to a new variable using a key / index.
-The key is interpreted using [`ast.literal_eval`](https://docs.python.org/3/library/ast.html#ast.literal_eval).
+The key is interpreted using [ast.literal_eval](https://docs.python.org/3/library/ast.html#ast.literal_eval).
 
 Arguments:
 * `name`: the name of the variable containing the element, only characters, digits, and underscores are allowed (corresponds to python's regex `\w`)
@@ -216,7 +252,7 @@ Arguments:
 ---
 
 **Given**
-```
+```gherkin
 the value of environment variable {name:w} is set to {value}
 
 - or -
@@ -233,7 +269,7 @@ Arguments:
 ---
 
 **Then**
-```
+```gherkin
 the value of environment variable {name:w} is {expected_value}
 
 - or -
@@ -248,12 +284,12 @@ Arguments:
 * `expected_value`: the expected value
 
 ## Pandas Steps
-The steps in [`beehyve/steps/pandas_steps.py`](https://github.com/CRitter93/beehyve/tree/main/beehyve/steps/pandas_steps.py) are used to add pandas dataframes to a test context and test dataframes.
+The steps in [beehyve/steps/pandas_steps.py](https://github.com/CRitter93/beehyve/tree/main/beehyve/steps/pandas_steps.py) are used to add pandas dataframes to a test context and test dataframes.
 
 ---
 
 **Given**
-```
+```gherkin
 the following table is loaded into dataframe {name:w}
 
 - or -
@@ -262,16 +298,16 @@ dataframe {name:w} <-
 ```
 
 Loads a table into a dataframe in the context.
-Uses [`behave_pandas`](https://pypi.org/project/behave-pandas/) for parsing, so the table has to match its syntax.
+Uses [behave_pandas](https://pypi.org/project/behave-pandas/) for parsing, so the table has to match its syntax.
 
 Arguments:
 * `name`: the name of the variable used for the dataframe, only characters, digits, and underscores are allowed (corresponds to python's regex `\w`)
-* *table*: the table represents the dataframe, should use the syntax defined by `behave_pandas`.
+* *table*: the table represents the dataframe, should use the syntax defined by behave_pandas.
 
 ---
 
 **Given**
-```
+```gherkin
 the following table is loaded into series {name:w}
 
 - or -
@@ -280,16 +316,16 @@ series {name:w} <-
 ```
 
 Loads a table into a series in the context.
-Uses [`behave_pandas`](https://pypi.org/project/behave-pandas/) for parsing, so the table has to match its syntax.
+Uses [behave_pandas](https://pypi.org/project/behave-pandas/) for parsing, so the table has to match its syntax.
 
 Arguments:
 * `name`: the name of the variable used for the series, only characters, digits, and underscores are allowed (corresponds to python's regex `\w`)
-* *table*: the table represents the series, should use the syntax defined by `behave_pandas`.
+* *table*: the table represents the series, should use the syntax defined by behave_pandas.
 
 ---
 
 **Given**
-```
+```gherkin
 the CSV file {file_name:CSVFile} is loaded into dataframe {name:w} (read_csv kwargs: {kwargs:Dict})
 
 - or -
@@ -310,13 +346,13 @@ Loads a CSV file into a dataframe in the context.
 Arguments:
 * `name`: the name of the variable used for the dataframe, only characters, digits, and underscores are allowed (corresponds to python's regex `\w`)
 * `file_name`: the name of the CSV file, a file path (only characters, digits, and underscores are allowed) ending with `.csv` or `.CSV`
-* `kwargs`: Optional dict of keyword arguments passed to pandas' [`read_csv`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html) function, interpreted using [`ast.literal_eval`](https://docs.python.org/3/library/ast.html#ast.literal_eval).
+* `kwargs`: Optional dict of keyword arguments passed to pandas' [read_csv](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html) function, interpreted using [ast.literal_eval](https://docs.python.org/3/library/ast.html#ast.literal_eval).
 Example: `{"delimiter" = ";", "skiprows": 1}`
 
 ---
 
 **Then**
-```
+```gherkin
 dataframe {name:w} is equal to (kwargs: {kwargs:FrameEqualsKWArgs})
 
 - or -
@@ -333,11 +369,11 @@ dataframe {name:w} equals
 ```
 
 Checks if a dataframe matches a dataframe given as table.
-Uses [`behave_pandas`](https://pypi.org/project/behave-pandas/) for parsing, so the table has to match its syntax.
+Uses [behave_pandas](https://pypi.org/project/behave-pandas/) for parsing, so the table has to match its syntax.
 
 Arguments:
 * `name`: the name of the variable used for the dataframe, only characters, digits, and underscores are allowed (corresponds to python's regex `\w`)
-* *table*: *table*: the table represents the expected dataframe, should use the syntax defined by `behave_pandas`.
+* *table*: *table*: the table represents the expected dataframe, should use the syntax defined by behave_pandas.
 * `kwargs`: Optional keyword arguments to apply when checking. Comma-separated list of `keyword=value` pairs.
 Available options are:
     * `common_columns_only` (bool): whether to check all columns or just the columns that both dataframes share, default=`False`
@@ -350,7 +386,7 @@ Available options are:
 ---
 
 **Then**
-```
+```gherkin
 dataframe {name1:w} is equal to dataframe {name2:w} (kwargs: {kwargs:FrameEqualsKWArgs})
 
 - or -
@@ -383,7 +419,7 @@ Available options are:
 ---
 
 **Then**
-```
+```gherkin
 series {name:w} is equal to (kwargs: {kwargs:SeriesEqualsKWArgs})
 
 - or -
@@ -400,11 +436,11 @@ series {name:w} equals
 ```
 
 Checks if a series matches a series given as table.
-Uses [`behave_pandas`](https://pypi.org/project/behave-pandas/) for parsing, so the table has to match its syntax.
+Uses [behave_pandas](https://pypi.org/project/behave-pandas/) for parsing, so the table has to match its syntax.
 
 Arguments:
 * `name`: the name of the variable used for the series, only characters, digits, and underscores are allowed (corresponds to python's regex `\w`)
-* *table*: *table*: the table represents the expected series, should use the syntax defined by `behave_pandas`.
+* *table*: *table*: the table represents the expected series, should use the syntax defined by behave_pandas.
 * `kwargs`: Optional keyword arguments to apply when checking. Comma-separated list of `keyword=value` pairs.
 Available options are:
     * `ignore_index` (bool): whether to check the index, default=`False`
@@ -417,7 +453,7 @@ Available options are:
 ---
 
 **Then**
-```
+```gherkin
 series {name1:w} is equal to series {name2:w} (kwargs: {kwargs:SeriesEqualsKWArgs})
 
 - or -
@@ -449,12 +485,12 @@ Available options are:
 
 ## Function Steps
 
-The steps in [`beehyve/steps/function_steps.py`](https://github.com/CRitter93/beehyve/tree/main/beehyve/steps/function_steps.py) are used to call functions using the variables in the context.
+The steps in [beehyve/steps/function_steps.py](https://github.com/CRitter93/beehyve/tree/main/beehyve/steps/function_steps.py) are used to call functions using the variables in the context.
 
 ---
 
 **When**
-```
+```gherkin
 the function {func_name:w} of module {module:Module} is called writing the results to {result_names:Result}
 
 - or -
@@ -475,13 +511,13 @@ The variables will automatically be matched with the signature of the function, 
 
 Arguments:
 * `func_name`: the name of the function to call
-* `module`: the name of the module containing the function, will be imported using [`importlib.import_module`](https://docs.python.org/3/library/importlib.html#importlib.import_module)
+* `module`: the name of the module containing the function, will be imported using [importlib.import_module](https://docs.python.org/3/library/importlib.html#importlib.import_module)
 * `result_names`: optional list of variable name(s) to assign the results to, a comma-separated list of names or a single name (s.a., `\w`)
 
 ---
 
 **When**
-```
+```gherkin
 the function {func_name:w} of module {module:Module} is called using arguments {args:Arguments} and keyword arguments {kwargs:KWArguments} writing the results to {result_names:Result}
 
 - or -
@@ -503,21 +539,21 @@ The variables need to be available in the context.
 
 Arguments:
 * `func_name`: the name of the function to call
-* `module`: the name of the module containing the function, will be imported using [`importlib.import_module`](https://docs.python.org/3/library/importlib.html#importlib.import_module)
+* `module`: the name of the module containing the function, will be imported using [importlib.import_module](https://docs.python.org/3/library/importlib.html#importlib.import_module)
 * `args`: a list of variable names to be used as positional arguments, a comma-separated list of names or a single name (s.a., `\w`)
 * `kwargs`: a list of keyword arguments where the key is the name of the function parameter and the value is a variable name, a comma-separated list of `param=variable` pairs
 * `result_names`: optional list of variable name(s) to assign the results to, a comma-separated list of names or a single name (s.a., `\w`)
 
 ## Monkeypatching Steps
 
-The steps in [`beehyve/steps/monkeypatch_steps.py`](https://github.com/CRitter93/beehyve/tree/main/beehyve/steps/monkeypatch_steps.py) are used to monkeypatch objects and attributes for specific test cases.
+The steps in [beehyve/steps/monkeypatch_steps.py](https://github.com/CRitter93/beehyve/tree/main/beehyve/steps/monkeypatch_steps.py) are used to monkeypatch objects and attributes for specific test cases.
 
-> Monkeypatching requires to use the tag `@monkeypatch` and the `before_tag` function defined in [`beehyve/utils/monkeypatch.py`](https://github.com/CRitter93/beehyve/tree/main/beehyve/utils/monkeypatch.py) (see [Usage](#usage)).
+> Monkeypatching requires to use the tag `@monkeypatch` and the `before_tag` function defined in [beehyve/utils/monkeypatch.py](https://github.com/CRitter93/beehyve/tree/main/beehyve/utils/monkeypatch.py) (see [Usage](#usage)).
 
 ---
 
 **Given**
-```
+```gherkin
 the value of environment variable {name:w} is monkeypatched to {value}
 
 - or -
@@ -534,7 +570,7 @@ Arguments:
 ---
 
 **Given**
-```
+```gherkin
 the attribute {attribute_name:w} of class {class_name:w} of module {module_name:Module} is monkeypatched to attribute {other_attribute_name:w} of module {other_module_name:Module}
 
 - or -
@@ -554,15 +590,15 @@ Monkeypatch an arbitrary attribute to another attribute.
 
 Arguments:
 * `attribute_name`: the name of the attribute to monkeypatch
-* `module_name`: the name of the module containing the attribute, will be imported using [`importlib.import_module`](https://docs.python.org/3/library/importlib.html#importlib.import_module)
+* `module_name`: the name of the module containing the attribute, will be imported using [importlib.import_module](https://docs.python.org/3/library/importlib.html#importlib.import_module)
 * `class_name`: optional name of a class containing the attribute to patch
-* `other_module_name`: the name of the module containing the attribute to use instead, will be imported using [`importlib.import_module`](https://docs.python.org/3/library/importlib.html#importlib.import_module)
+* `other_module_name`: the name of the module containing the attribute to use instead, will be imported using [importlib.import_module](https://docs.python.org/3/library/importlib.html#importlib.import_module)
 * `other_attribute_name`: the name of the attribute to use instead
 
 ---
 
 **Given**
-```
+```gherkin
 the attribute {attribute_name:w} of class {class_name:w} of module {module_name:Module} is monkeypatched to {value}
 
 - or -
@@ -582,9 +618,9 @@ Monkeypatch an arbitrary attribute to a value.
 
 Arguments:
 * `attribute_name`: the name of the attribute to monkeypatch
-* `module_name`: the name of the module containing the attribute, will be imported using [`importlib.import_module`](https://docs.python.org/3/library/importlib.html#importlib.import_module)
+* `module_name`: the name of the module containing the attribute, will be imported using [importlib.import_module](https://docs.python.org/3/library/importlib.html#importlib.import_module)
 * `class_name`: optional name of a class containing the attribute to patch
-* `value`: the value to monkeypatch the variable to. Uses [`ast.literal_eval`](https://docs.python.org/3/library/ast.html#ast.literal_eval) to interpret the value.
+* `value`: the value to monkeypatch the variable to. Uses [ast.literal_eval](https://docs.python.org/3/library/ast.html#ast.literal_eval) to interpret the value.
 
 
 # Not-yet-frequently Asked Questions

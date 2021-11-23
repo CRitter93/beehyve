@@ -17,25 +17,29 @@ VERSION = version
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    "behave>=1.2,<1.3",
-    "pandas>=1.3,<1.4",
-    "behave-pandas>=0.4,<0.5",
-    "parse>=1.19,<1.20",
-    "pytest>=6.2.5,<6.3",
+    "behave>=1",
+    "pandas>=1",
+    "behave-pandas>=0.4",
+    "parse>=1.19",
+    "pytest>=6.2.5",
 ]
 EXTRAS = {
     "dev": [
-        "black>=20.8b0,<21",
-        "coverage>=5.5,<6",
-        "isort>=5.9.3,<6",
-        "flake8>=3.9.2,<3.10",
-        "flake8-docstrings>=1.6.0,<1.7",
-        "pep8-naming>=0.10.0,<0.11",
-        "mccabe>=0.6.1,<0.7",
-        "pydocstyle>=6.1.1,<6.2",
-        "mypy>=0.910,<1.0",
-        "bandit>=1.7.0,<1.8",
-    ]
+        "black>=20.8b0",
+        "coverage>=5.5",
+        "isort>=5.9.3",
+        "flake8>=3.9.2",
+        "flake8-docstrings>=1.6.0",
+        "pep8-naming>=0.10.0",
+        "mccabe>=0.6.1",
+        "pydocstyle>=6.1.1",
+        "mypy>=0.910",
+        "bandit>=1.7.0",
+    ],
+    "doc": [
+        "sphinx-rtd-theme>=1",
+        "m2r2",
+    ],
 }
 
 # Package setup
@@ -57,4 +61,9 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     setup_requires=["wheel"],
+    entry_points={
+        "console_scripts": [
+            "create-beehyve-stubs=beehyve.create_beehyve_step_stubs:main",
+        ],
+    },
 )
